@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolar</title>
+
+    <!-- --------------------------------------------------------------------- -->
+    <!--                           AWP PWA Manifest                            -->
+    <!-- --------------------------------------------------------------------- -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#138496"/>
+    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
+    <!-- --------------------------------------------------------------------- -->
+
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    
+    <h1><u>Gráfico Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></h1>
+    <h2>fecha y hora actual: <span id="fyh"></span> - Venta <span id="valor-venta"></span></h2>
+    <hr>
+
+    <h3>Filtros</h3>
+    <label for=""><b>fecha inicial : </b></label>
+    <input type="datetime-local" id="start-time">
+    <button class="sep" id="borrar">borrar</button>
+
+    <label for=""><b>cant. minutos : </b></label>
+    <input class="sep" type="number" id="cant-min">
+
+    <label for=""><b>step : </b></label>
+    <input type="number" id="step-min">
+
+
+    <br>
+    <br>
+    <hr>
+    <h3 id="modo"></h3>
+
+    <div id="msg-error"></div>
+    <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js" integrity="sha512-V0j9LhrK9IMNdFYZqh+IqU4cjo7wdxyHNyH+L0td4HryBuZ7Oq6QxP2/CWr6TituX31+gv5PnolvERuTbz8UNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+    <script src="js/main.js"></script>
+
+</body>
+</html>

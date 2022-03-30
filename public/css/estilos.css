@@ -1,0 +1,39 @@
+body {
+    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+h1 {
+    color: rgb(85, 161, 82);
+}
+
+h2 {
+    color: purple;
+}
+
+h3 {
+    color: brown;
+}
+
+#fyh {
+    color: tomato;
+}
+
+#version {
+    color: blueviolet;
+    font-size: 75%;
+}
+
+.sep {
+    margin-right: 10px;
+}
+
+#valor-venta {
+    color: red;
+}
+
+#valor-venta i {
+    color: crimson;
+    font-size: 90%;
+}
