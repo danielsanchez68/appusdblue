@@ -24,7 +24,8 @@ async function tickRepreData() {
 
 
     //petición de los datos al backend
-    const { data: respuesta } = await axios(`/data/${cantMin && cantMin!=0?cantMin:60}/${startTimestamp}`)
+    const { data: respuesta } = await axios(`/data/${cantMin && cantMin!=0?cantMin:60}/${startTimestamp}/`)
+    //const { data: respuesta } = await axios(`/data/${cantMin}/${startTimestamp}/`)
 
     const datos = respuesta.ultimos
     const valorVentaActual = datos[datos.length-1]?.dolar || '?'

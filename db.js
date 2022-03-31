@@ -2,9 +2,6 @@ import mongoose from 'mongoose'
 import util from './util.js';
 import config from './config.js';
 
-const URL_BASE = 'mongodb://localhost/dolar'
-//const URL_BASE = 'mongodb+srv://daniel:daniel123@misdatos.fs00f.mongodb.net/dolar?retryWrites=true&w=majority'
-
 const DolarSchema = mongoose.Schema({
     dolar: Number,
     timestamp: Number
@@ -21,6 +18,7 @@ const connect = async () => {
             let dolar = await util.getDolarBlue()
             //console.log('dolarBlue', dolar)
             await save(dolar)
+
             /*
             const datos = await read()
             //console.log(datos.length)
@@ -41,8 +39,15 @@ const save = async dolar => {
     await DolarSave.save()
 }
 
-const read = async timestamp => {
-    return await DolarModel.find({timestamp: {$gte:timestamp}},{__v:0,_id:0}).lean()
+const read = async (timestamp, cant) => {
+    let timestampActual = new Date().getTime()
+    let timestampIni = timestamp? timestamp : (timestampActual - (60000 * cant))
+    let timestampFin = timestamp? (timestamp+(60000 * cant)) : timestampActual
+
+    //console.log(cant, timestamp, timestampFin, timestampIni)
+    //console.log(timestampFin - timestampIni)
+
+    return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
 }
 
 
