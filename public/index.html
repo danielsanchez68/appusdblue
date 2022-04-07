@@ -14,25 +14,29 @@
     <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
     <!-- --------------------------------------------------------------------- -->
 
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
     
-    <h1><u>Gráfico Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></h1>
-    <h2>fecha y hora actual: <span id="fyh"></span> - Venta <span id="valor-venta"></span></h2>
+    <h1><img src="./images/app.png" alt=""><u>Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></h1>
+    <h2>Fecha y hora actual: <span id="fyh"></span> - Venta <span id="valor-venta"></span></h2>
     <hr>
 
     <h3>Filtros</h3>
-    <label for=""><b>fecha inicial : </b></label>
+    <label for=""><b>Fecha inicial</b></label>
     <input type="datetime-local" id="start-time">
-    <button class="sep" id="borrar">borrar</button>
+    <br><br>
 
-    <label for=""><b>cant. minutos : </b></label>
-    <input class="sep" type="number" id="cant-min">
+    <label for=""><b>Fecha final</b></label>
+    <input type="datetime-local" id="end-time">
+    <br><br>
 
-    <label for=""><b>step : </b></label>
+    <label for=""><b>Paso (en minutos)</b></label>
     <input type="number" id="step-min">
+    <br><br>
 
+    <button class="sep" id="borrar">Borrar</button>
 
     <br>
     <br>

@@ -37,3 +37,13 @@ h3 {
     color: crimson;
     font-size: 90%;
 }
+
+label {
+    display: block;
+}
+
+h1 img {
+    position: relative;
+    top:10px;
+    margin-right: 5px;
+}

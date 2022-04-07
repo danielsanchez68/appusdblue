@@ -1,7 +1,13 @@
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const URL_BASE = process.env.URL_BASE || 'mongodb://localhost:27017/mibase'
+const VERSION = 'v0.2.3'
+const TMS_GETDOLARAPI = /* 60100 */ 5000
+
 export default {
-    VERSION: 'v0.2.2',
-    //URL_BASE : 'mongodb://localhost/dolar',
-    URL_BASE : 'mongodb+srv://daniel:daniel123@misdatos.fs00f.mongodb.net/dolar?retryWrites=true&w=majority',
-    //TMS_GETDOLARAPI : 5000
-    TMS_GETDOLARAPI : 60100
+    URL_BASE,
+    VERSION,
+    TMS_GETDOLARAPI
 }

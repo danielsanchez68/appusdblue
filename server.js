@@ -22,20 +22,14 @@ app.get('/version', (req,res) => {
     res.json({ version: config.VERSION })
 })
 
-app.get('/data/:cant?/:timestamp?', async (req,res) => {
+app.get('/data/:starttimestamp/:endtimestamp?', async (req,res) => {
     
-    //let t1 = new Date()
-    const cant = Number(req.params.cant) || 5
-    const timestamp = Number(req.params.timestamp) || 0
-    //console.log('timestamp',timestamp)
-    const datos = await db.read(timestamp, cant)
-    //console.log('datos.length', datos.length)
-    //let t2 = new Date()
-    const ultimos = datos//timestamp? datos.slice(0,cant) : datos.slice(-cant)
-    //console.log('tiempo transcurrido', t2 - t1)
+    const startTimestamp = Number(req.params.starttimestamp) || 0
+    const endTimestamp = Number(req.params.endtimestamp) || 0
+    
+    const datos = await db.read(startTimestamp, endTimestamp)
 
-    //console.log(ultimos, ultimos.length)
-    res.json({ultimos, timestamp: Date.now()})
+    res.json({datos, timestamp: Date.now()})
 })
 
 

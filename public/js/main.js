@@ -6,6 +6,8 @@ async function iniRepreData() {
     //acción del botón de borrar
     document.getElementById('borrar').onclick = function() {
         document.getElementById('start-time').value = ''
+        document.getElementById('end-time').value = ''
+        document.getElementById('step-min').value = ''
     }
 }
 
@@ -14,20 +16,22 @@ async function tickRepreData() {
     const startTime = document.getElementById('start-time').value
     const startTimestamp = new Date(startTime).getTime()
 
-    //tomo la cantidad de minutos
-    const cantMin = document.getElementById('cant-min').value
+    const endTime = document.getElementById('end-time').value
+    const endTimestamp = new Date(endTime).getTime()
+
     //tomo el step de minutos
     const stepMin = document.getElementById('step-min').value
 
-    document.getElementById('modo').innerText = 
-        `Mostrando ${cantMin? cantMin:60} minuto(s) en pasos de ${stepMin?stepMin: 1} minuto(s) ${startTimestamp? 'a partir de la fecha inicial': 'anteriores a la fecha actual'}`
+    document.getElementById('modo').innerText = startTimestamp && endTimestamp ?
+        `Mostrando desde fecha inicial: ${new Date(startTime).toLocaleString()} hasta fecha final: ${new Date(endTime).toLocaleString()}` :
+        `Mostrando última hora`
 
+    document.getElementById('modo').innerText += ` en pasos de ${stepMin?stepMin: 1} minuto(s)`
 
     //petición de los datos al backend
-    const { data: respuesta } = await axios(`/data/${cantMin && cantMin!=0?cantMin:60}/${startTimestamp}/`)
-    //const { data: respuesta } = await axios(`/data/${cantMin}/${startTimestamp}/`)
+    const { data: respuesta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
 
-    const datos = respuesta.ultimos
+    const datos = respuesta.datos
     const valorVentaActual = datos[datos.length-1]?.dolar || '?'
     const tsvalorVentaActual = datos[datos.length-1]?.timestamp || '?'
     document.getElementById('valor-venta').innerHTML = 
@@ -64,6 +68,7 @@ function timestamp2fyh(dato) {
 const graf = (datosin,step) => {
 
     const datos = datosin.filter((dato,index) => index % step == 0)
+    datos.push(datosin[datosin.length-1])
 
     if(datos.length) { 
         document.getElementById('msg-error').innerHTML = ''

@@ -16,16 +16,7 @@ const connect = async () => {
 
         setInterval(async () => {
             let dolar = await util.getDolarBlue()
-            //console.log('dolarBlue', dolar)
             await save(dolar)
-
-            /*
-            const datos = await read()
-            //console.log(datos.length)
-            const datosArray = datos.map( dato => dato.dolar)
-            const ultimos = datosArray.slice(-5)
-            console.log(ultimos, ultimos.length)
-            */
         },config.TMS_GETDOLARAPI)
 
     }
@@ -35,17 +26,16 @@ const connect = async () => {
 }
 
 const save = async dolar => {
+    //return    
     const DolarSave = new DolarModel({dolar, timestamp: Date.now()})
     await DolarSave.save()
 }
 
-const read = async (timestamp, cant) => {
+const read = async (starttimestamp, endtimestamp) => {
+    const cant = 60 // en segundos
     let timestampActual = new Date().getTime()
-    let timestampIni = timestamp? timestamp : (timestampActual - (60000 * cant))
-    let timestampFin = timestamp? (timestamp+(60000 * cant)) : timestampActual
-
-    //console.log(cant, timestamp, timestampFin, timestampIni)
-    //console.log(timestampFin - timestampIni)
+    let timestampIni = starttimestamp && endtimestamp? starttimestamp : (timestampActual - (60000 * cant))
+    let timestampFin = starttimestamp && endtimestamp? endtimestamp: timestampActual
 
     return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
 }
