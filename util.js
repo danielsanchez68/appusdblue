@@ -1,4 +1,4 @@
-import axios from 'axios'
+const axios = require('axios')
 
 /* const getDolarBlue = async () => {
     const { data:respuesta } = await axios('https://www.dolarsi.com/api/api.php?type=valoresprincipales')
@@ -14,6 +14,6 @@ const getDolarBlue = async () => {
 
 
 
-export default {
+module.exports = {
     getDolarBlue
 }

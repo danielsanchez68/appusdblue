@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,19 +11,21 @@
     <!--                           AWP PWA Manifest                            -->
     <!-- --------------------------------------------------------------------- -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#138496"/>
+    <meta name="theme-color" content="#138496" />
     <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
     <!-- --------------------------------------------------------------------- -->
 
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="css/estilos.css">
 </head>
+
 <body>
-    
+
     <h1><img src="./images/app.png" alt=""><u>Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></h1>
     <h2>Fecha y hora actual: <span id="fyh"></span> - Venta <span id="valor-venta"></span></h2>
     <hr>
 
+    <!-- --------------------------------------- -->
     <h3>Filtros</h3>
     <label for=""><b>Fecha inicial</b></label>
     <input type="datetime-local" id="start-time">
@@ -44,11 +47,38 @@
     <h3 id="modo"></h3>
 
     <div id="msg-error"></div>
-    <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+    <div id='myDiv'>
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js" integrity="sha512-V0j9LhrK9IMNdFYZqh+IqU4cjo7wdxyHNyH+L0td4HryBuZ7Oq6QxP2/CWr6TituX31+gv5PnolvERuTbz8UNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+    <br>
+    
+    <!-- ---------------------------------------- -->
+    <!--                   Push                   -->
+    <!-- ---------------------------------------- -->
+    <section>
+        <p>
+            <button disabled class="js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                Habilitar Notificaciones Push
+            </button>
+        </p>
+        <div class="subscription-details js-subscription-details is-invisible">
+            <pre><code class="js-subscription-json"></code></pre>
+        </div>
+
+    </section>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+        integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js"
+        integrity="sha512-V0j9LhrK9IMNdFYZqh+IqU4cjo7wdxyHNyH+L0td4HryBuZ7Oq6QxP2/CWr6TituX31+gv5PnolvERuTbz8UNA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="js/push.js"></script>
     <script src="js/main.js"></script>
 
 </body>
+
 </html>

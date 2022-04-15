@@ -1,10 +1,10 @@
 async function iniRepreData() {
     //tomo la versión y la represnto
-    const { data:rta} = await axios('/version')
+    const { data: rta } = await axios('/version')
     document.getElementById('version').innerText = rta.version
 
     //acción del botón de borrar
-    document.getElementById('borrar').onclick = function() {
+    document.getElementById('borrar').onclick = function () {
         document.getElementById('start-time').value = ''
         document.getElementById('end-time').value = ''
         document.getElementById('step-min').value = ''
@@ -33,10 +33,10 @@ async function tickRepreData() {
     console.log(endTimestamp != endTimestampAnt ) */
 
     //petición de los datos al backend
-    if( 
-        (!startTimestamp && !endTimestamp && (contPedido>=60) ) ||
+    if (
+        (!startTimestamp && !endTimestamp && (contPedido >= 60)) ||
         (startTimestamp != startTimestampAnt) ||
-        (endTimestamp != endTimestampAnt) 
+        (endTimestamp != endTimestampAnt)
     ) {
         console.log('Pidiendo...', Date.now())
         const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
@@ -48,29 +48,29 @@ async function tickRepreData() {
         contPedido = 0
     }
 
-    if(respuesta) {
+    if (respuesta) {
         const datos = respuesta.datos
-        const valorVentaActual = datos[datos.length-1]?.dolar || '?'
-        const tsvalorVentaActual = datos[datos.length-1]?.timestamp || '?'
+        const valorVentaActual = datos[datos.length - 1]?.dolar || '?'
+        const tsvalorVentaActual = datos[datos.length - 1]?.timestamp || '?'
 
         //tomo el step de minutos
         let stepMin = document.getElementById('step-min').value
-        
-        if(datos.length >= 1000 && datos.length < 5000 && stepMin < 5) stepMin = 5
-        if(datos.length >= 5000 && datos.length < 10000 && stepMin < 10) stepMin = 10
-        if(datos.length >= 10000 && stepMin < 20) stepMin = 20
-        
-        document.getElementById('valor-venta').innerHTML = 
-            `$${valorVentaActual } <i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
+
+        if (datos.length >= 1000 && datos.length < 5000 && stepMin < 5) stepMin = 5
+        if (datos.length >= 5000 && datos.length < 10000 && stepMin < 10) stepMin = 10
+        if (datos.length >= 10000 && stepMin < 20) stepMin = 20
+
+        document.getElementById('valor-venta').innerHTML =
+            `$${valorVentaActual} <i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
 
         document.getElementById('modo').innerText = startTimestamp && endTimestamp ?
             `Mostrando desde fecha inicial: ${new Date(startTime).toLocaleString()} hasta fecha final: ${new Date(endTime).toLocaleString()}` :
             `Mostrando última hora`
-    
-        document.getElementById('modo').innerText += ` en pasos de ${stepMin?stepMin: 1} minuto(s)`
-    
-    
-        graf(datos, stepMin && stepMin!=0? stepMin : 1) 
+
+        document.getElementById('modo').innerText += ` en pasos de ${stepMin ? stepMin : 1} minuto(s)`
+
+
+        graf(datos, stepMin && stepMin != 0 ? stepMin : 1)
     }
 
     //represento la hora actual
@@ -99,14 +99,14 @@ function timestamp2fyh(dato) {
     return `${dma[0]}/${dma[1]} ${hms[0]}:${hms[1]}`
 }
 
-const graf = (datosin,step) => {
+const graf = (datosin, step) => {
     //console.log(datosin)
 
-    if(datosin.length && (typeof datosin[0] != 'undefined')) { 
+    if (datosin.length && (typeof datosin[0] != 'undefined')) {
 
-        const datos = datosin.filter((dato,index) => index % step == 0)
-        datos.push(datosin[datosin.length-1])
-    
+        const datos = datosin.filter((dato, index) => index % step == 0)
+        datos.push(datosin[datosin.length - 1])
+
         document.getElementById('msg-error').innerHTML = ''
         document.getElementById('myDiv').style.display = 'block'
 
@@ -120,9 +120,9 @@ const graf = (datosin,step) => {
             mode: 'lines+markers'
             //type: 'scatter'
         };
-    
+
         var data = [trace];
-    
+
         var layout = {
             title: '<b>Dolar histórico</b>',
             xaxis: {
@@ -150,9 +150,9 @@ const graf = (datosin,step) => {
                 linecolor: 'rgb(204,204,204)',
             },
         };
-    
+
         Plotly.newPlot('myDiv', data, layout);
-    
+
     }
     else {
         document.getElementById('myDiv').style.display = 'none'
@@ -162,14 +162,40 @@ const graf = (datosin,step) => {
 
 
 function registrarServiceWorker() {
-    if('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator) {
         this.navigator.serviceWorker.register('./sw.js')
-        .then( reg => {
-            console.log('El service worker se registró correctamente', reg)
-        })
-        .catch( err => {
-            console.log('Error al registrar el service worker', err)
-        })
+            .then(reg => {
+                console.log('El service worker se registró correctamente', reg)
+
+                notificaciones.initialiseUI(reg)
+
+                //Pedimos permiso al sistema operativo para permitir ventanas de notificación emergentes
+                Notification.requestPermission(function (result) {
+                    if (result === 'granted') {
+                        navigator.serviceWorker.ready.then(function (registration) {
+                            console.log(registration)
+                        });
+                    }
+                });
+
+                //skip waiting automático
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing
+                    installingWorker.onstatechange = () => {
+                        console.log('SW ---> ', installingWorker.state)
+                        if (installingWorker.state == 'activated') {
+                            console.log('reinicio en 2 segundos ...')
+                            setTimeout(() => {
+                                console.log('OK!')
+                                location.reload()
+                            }, 2000)
+                        }
+                    }
+                }
+            })
+            .catch(err => {
+                console.log('Error al registrar el service worker', err)
+            })
     }
     else {
         console.error('serviceWorker no está disponible en este navegador')

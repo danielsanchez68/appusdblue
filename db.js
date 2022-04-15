@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
-import util from './util.js';
-import config from './config.js';
+const mongoose = require('mongoose')
+const util = require('./util.js')
+const config = require('./config.js')
 
 const DolarSchema = mongoose.Schema({
     dolar: Number,
@@ -41,7 +41,7 @@ const read = async (starttimestamp, endtimestamp) => {
 }
 
 
-export default {
+module.exports = {
     connect,
     read
 }

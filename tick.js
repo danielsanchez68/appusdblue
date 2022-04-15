@@ -1,4 +1,4 @@
-import axios from "axios"
+const axios = require("axios")
 
 setInterval(async () => {
     //console.log((await axios('https://appusdblue.herokuapp.com/')).status)
