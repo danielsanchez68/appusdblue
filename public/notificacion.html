@@ -70,7 +70,7 @@
             })
 
             function sendMensajePush(mensaje, cb) {
-                let url = 'http://localhost:8080/notification?payload='
+                let url = '/notification?payload='
 
                 $.ajax({
                     url: url + mensaje,
