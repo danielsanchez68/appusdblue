@@ -57,7 +57,7 @@
     "which": "2.0.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": "16.x"
   },
   "nodemonConfig": {
     "ignore": [
