@@ -26,38 +26,45 @@ app.get('/vapidkeys', (req,res) => {
   res.json({data: vapidKeys})
 })
 
+app.get('/cs', async (req,res) => {
+  let suscripcions = null
 
-app.post('/suscripcion', (req,res) => {
+  //console.log('suscripcion',datos)
+  try { suscripcions = JSON.parse(await fs.promises.readFile('suscripcions.dat','utf-8')) }
+  catch { suscripcions = {} }
+
+  res.json({cantSuscriptores: Object.keys(suscripcions).length})
+})
+
+app.post('/suscripcion', async(req,res) => {
   let suscripcions = null
   let datos = req.body
 
   //console.log('suscripcion',datos)
-  try { suscripcions = JSON.parse(fs.readFileSync('suscripcions.dat','utf-8')) }
+  try { suscripcions = JSON.parse(await fs.promises.readFile('suscripcions.dat','utf-8')) }
   catch { suscripcions = {} }
 
   //agrego suscripción
   suscripcions[datos.endpoint] = datos
 
-  fs.writeFile('suscripcions.dat', JSON.stringify(suscripcions), () => {
-    res.json({res: 'ok suscription', datos})
-  })
+  await fs.promises.writeFile('suscripcions.dat', JSON.stringify(suscripcions))
+  res.json({res: 'ok suscription', datos})
 })
 
 
-app.post('/desuscripcion', (req,res) => {
+app.post('/desuscripcion', async (req,res) => {
   let suscripcions = null
   let datos = req.body
 
   //console.log('desuscripcion',datos)
-  try { suscripcions = JSON.parse(fs.readFileSync('suscripcions.dat','utf-8')) }
+  try { suscripcions = JSON.parse(await fs.promises.readFile('suscripcions.dat','utf-8')) }
   catch { suscripcions = {} }
 
   //borro suscripción
   delete suscripcions[datos.endpoint]
 
-  fs.writeFile('suscripcions.dat', JSON.stringify(suscripcions), () => {
-    res.json({res: 'ok desuscripcion', datos})
-  })
+  await fs.promises.writeFile('suscripcions.dat', JSON.stringify(suscripcions))
+  res.json({res: 'ok desuscripcion', datos})
 })
 
 

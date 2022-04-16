@@ -21,13 +21,23 @@ const connect = async () => {
 
         setInterval(async () => {
             let dolar = await util.getDolarBlue()
-            console.log(dolar)
+            //console.log(dolar)
             await save(dolar)
-            if((dolar != dolarAnt) && dolarAnt) {
+            if(dolar != dolarAnt) {
                 const mensaje = `cambío el dolar de $${dolarAnt} a $${dolar}`
-                //const mensaje = `cambío el dolar a $${dolar}`
                 console.log(mensaje)
-                await enviarNotificacionPush(mensaje)
+
+                if(dolarAnt) {
+                  console.log('> Enviando notificación ...')
+                  const [haySuscripcions,subscription, payload, options, errores] = await enviarNotificacionPush(mensaje)
+
+                  if(!errores.length && haySuscripcions) {
+                    console.log({res: 'ok', subscription, payload, options})
+                  }
+                  else {
+                    console.log({res: 'error', errores})
+                  }
+                }
                 dolarAnt = dolar
             }
         },config.TMS_GETDOLARAPI)
