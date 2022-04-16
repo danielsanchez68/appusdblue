@@ -16,9 +16,9 @@ const app = express()
 app.use(express.static('public'))
 app.use(express.json())
 
-
+let vapidKeys = {}
 ;(async () => {
-  const vapidKeys = await db.iniVapidKeys()
+  vapidKeys = await db.iniVapidKeys()
   console.log('vapidKeys:',vapidKeys)
 })()
 
