@@ -40,10 +40,15 @@ const notificaciones = (function() {
     //---------------------------------------------------------------
     // function updateSubscriptionOnServer(subscription)
     //---------------------------------------------------------------
-    function updateSubscriptionOnServer(subscription) {
+    function updateSubscriptionOnServer(subscription, suscribir) {
         // TODO: Send subscription to application server
-        if (subscription) {
+        if (suscribir) {
             postSuscripcion(subscription, data => {
+                console.log(data)
+            })
+        }
+        else {
+            postDesuscripcion(subscription, data => {
                 console.log(data)
             })
         }
@@ -69,7 +74,7 @@ const notificaciones = (function() {
                 .then(function (subscription) {
                     console.log('User is subscribed:', subscription);
         
-                    updateSubscriptionOnServer(subscription);
+                    updateSubscriptionOnServer(subscription, true);
         
                     isSubscribed = true;
         
@@ -93,14 +98,17 @@ const notificaciones = (function() {
         swRegistration.pushManager.getSubscription()
             .then(function (subscription) {
                 if (subscription) {
-                    return subscription.unsubscribe();
+                    /* return  */subscription.unsubscribe();
+                    return subscription
                 }
             })
             .catch(function (error) {
                 console.log('Error unsubscribing', error);
             })
-            .then(function () {
-                updateSubscriptionOnServer(null);
+            .then(function (subscription) {
+                console.log('unsubscribeUser', subscription)
+
+                updateSubscriptionOnServer(subscription, false);
     
                 console.log('User is unsubscribed.');
                 isSubscribed = false;
@@ -138,7 +146,7 @@ const notificaciones = (function() {
     // function postSuscripcion(datos, cb)
     //---------------------------------------------------------------
     async function postSuscripcion(datos, cb) {
-        let url = 'http://localhost:8080/suscripcion'
+        //let url = 'http://localhost:8080/suscripcion'
     
         try {
             const { data: rta } = await axios.post('/suscripcion', datos)
@@ -163,6 +171,35 @@ const notificaciones = (function() {
         */
     }
     
+    //---------------------------------------------------------------
+    // function postDesuscripcion(datos, cb)
+    //---------------------------------------------------------------
+    async function postDesuscripcion(datos, cb) {
+        //let url = 'http://localhost:8080/suscripcion'
+    
+        try {
+            const { data: rta } = await axios.post('/desuscripcion', datos)
+            cb(rta)
+        }
+        catch(error) {
+            console.log(error)
+            cb('error')
+        }
+        /*
+        $.ajax({
+            url: url,
+            data: JSON.stringify(datos),
+            contentType: 'application/json',
+            method: 'post'
+        })
+        .then(cb)
+        .catch(error => {
+            console.log(error)
+            cb('error')
+        })
+        */
+    }
+
     //---------------------------------------------------------------
     // function initialiseUI(reg)
     //---------------------------------------------------------------

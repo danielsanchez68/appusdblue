@@ -49,24 +49,29 @@
             $('button').click(e => {
                 e.preventDefault()
                 let mensaje = $('input').val()
-                console.log(mensaje)
-                sendMensajePush(mensaje, datos => {
-                    $("form")[0].reset();
-                    console.log(datos)
-                    if(datos.res != 'error') {
-                        $('#msg-ok').css('display','block')
-                        setTimeout(() => {
-                            $('#msg-ok').css('display','none')
-                        },2000)
-                    }
-                    else {
-                        $('#msg-mal').css('display','block')
-                        setTimeout(() => {
-                            $('#msg-mal').css('display','none')
-                        },2000)
+                //console.log(mensaje)
+                if(mensaje) {
+                    sendMensajePush(mensaje, datos => {
+                        $("form")[0].reset();
+                        console.log(datos)
+                        if(datos.res != 'error') {
+                            $('#msg-ok').css('display','block')
+                            setTimeout(() => {
+                                $('#msg-ok').css('display','none')
+                            },2000)
+                        }
+                        else {
+                            $('#msg-mal').css('display','block')
+                            setTimeout(() => {
+                                $('#msg-mal').css('display','none')
+                            },2000)
 
-                    }
-                })
+                        }
+                    })
+                }
+                else {
+                    alert('El mensaje está vacío')
+                }
             })
 
             function sendMensajePush(mensaje, cb) {
@@ -79,7 +84,7 @@
                 .then(cb)
                 .catch(error => {
                     console.log(error)
-                    cb('error')
+                    cb({res: 'error'})
                 })
             }
         })
