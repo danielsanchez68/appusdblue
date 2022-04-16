@@ -4,7 +4,6 @@ const config = require('./config.js')
 const util = require('./util.js')
 const db = require('./db.js')
 
-const webPush = require('./index.js');
 const express = require('express')
 const fs = require('fs')
 
@@ -17,42 +16,16 @@ const app = express()
 app.use(express.static('public'))
 app.use(express.json())
 
-//------------------------------------
-//endpoint para recibir las vapid keys
-//------------------------------------
-let vapidKeys = {}
-try {
-  vapidKeys = JSON.parse(fs.readFileSync('vapidkeys.dat','utf-8'))
-}
-catch {
-  //vapidKeys = {}
-  vapidKeys = webPush.generateVAPIDKeys();
-  fs.writeFile('vapidkeys.dat', JSON.stringify(vapidKeys), () => {
-    console.log('vapidKeys inicial: ', vapidKeys)
-  })
-}
-//console.log('vapidKeys inicial: ', vapidKeys)
+
+;(async () => {
+  const vapidKeys = await db.iniVapidKeys()
+  console.log('vapidKeys:',vapidKeys)
+})()
 
 app.get('/vapidkeys', (req,res) => {
-  //vapidKeys = webPush.generateVAPIDKeys();
-  //fs.writeFile('vapidkeys.dat', JSON.stringify(vapidKeys), () => {
-    res.json({data: vapidKeys})
-  //})
+  res.json({data: vapidKeys})
 })
 
-//--------------------------------------
-//endpoint para realizar una suscripción
-//--------------------------------------
-/*
-let suscripcion
-try {
-  suscripcion = JSON.parse(fs.readFileSync('suscripcion.dat','utf-8'))
-}
-catch {
-  suscripcion = {}
-}
-//console.log('suscripcion inicial: ', suscripcion)
-*/
 
 app.post('/suscripcion', (req,res) => {
   let suscripcions = null
@@ -69,6 +42,7 @@ app.post('/suscripcion', (req,res) => {
     res.json({res: 'ok suscription', datos})
   })
 })
+
 
 app.post('/desuscripcion', (req,res) => {
   let suscripcions = null
@@ -90,75 +64,9 @@ app.post('/desuscripcion', (req,res) => {
 //-------------------------------------
 //endpoint para enviar una notificación
 //-------------------------------------
-app.get('/notification', (req,res) => {
+app.get('/notification', async (req,res) => {
   let query = req.query
-
-  let suscripcions = null
-  let subscription
-  let payload
-  let options
-  let errores = []
-  let haySuscripcions = false
-
-  //console.log('desuscripcion',datos)
-  try { suscripcions = JSON.parse(fs.readFileSync('suscripcions.dat','utf-8')) }
-  catch { suscripcions = {} }
-
-  for(let key in suscripcions) {
-    haySuscripcions = true
-
-    let suscripcion = suscripcions[key]
-    //console.log(suscripcion)
-    //---------------------------------------------
-    //verifico que haya suscripción y vapid pedidas
-    //---------------------------------------------
-    if(!Object.keys(suscripcion).length || !Object.keys(vapidKeys).length) {
-      res.json({res: 'error', err})
-      //res.json({res: suscripcion})
-    }    
-    else { 
-      //-------------------------
-      // Armo objeto subscription
-      //-------------------------
-      subscription = {
-        endpoint: suscripcion.endpoint,
-        keys: {
-          p256dh: suscripcion.keys.p256dh || null,
-          auth: suscripcion.keys.auth || null
-        }
-      }
-      //-------------
-      // Armo payload
-      //-------------
-      payload = query.payload || "Mensaje default de notificación"
-      
-      //--------------------
-      // Armo objeto options
-      //--------------------
-      options = {
-        TTL : suscripcion.expirationTime? suscripcion.expirationTime : 0,
-        vapidDetails : {
-          subject: query.subject || 'mailto: danielsanchez68@hotmail.com',
-          publicKey: vapidKeys.publicKey || null,
-          privateKey: vapidKeys.privateKey || null
-        }
-      }
-
-      //-------------------
-      // Envio notificacion
-      //-------------------
-      webPush.sendNotification(subscription, payload, options)
-      .then(() => {
-        console.log('Push message sent.', subscription.endpoint);
-        //res.json({res: 'ok', subscription, payload, options})
-      }, err => {
-        console.log('Error sending push message: ', subscription.endpoint, err, );
-        errores.push(err)
-        //console.log(err);
-        //res.json({res: 'error', err})
-      })
-    }
-  }
+  const [haySuscripcions,subscription, payload, options, errores] = await db.enviarNotificacionPush(query.payload)
 
   if(!errores.length && haySuscripcions) {
     res.json({res: 'ok', subscription, payload, options})
@@ -166,7 +74,6 @@ app.get('/notification', (req,res) => {
   else {
     res.json({res: 'error', errores})
   }
-
 })
 
 /*  ------------------ ENDPOINTS DE LA APP ------------------ */

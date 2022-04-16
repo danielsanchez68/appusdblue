@@ -1,2 +1,4 @@
 node_modules/
 .env
+vapidkeys.dat
+suscripcions.dat
