@@ -1,11 +1,12 @@
 'use strict';
 
 const config = require('./config.js')
-const util = require('./util.js')
 const db = require('./db.js')
 
 const express = require('express')
 const fs = require('fs')
+
+const push = require('./push.js')
 
 require('./tick.js')
 
@@ -16,16 +17,17 @@ const app = express()
 app.use(express.static('public'))
 app.use(express.json())
 
-let vapidKeys = {}
-;(async () => {
-  vapidKeys = await db.iniVapidKeys()
-  console.log('vapidKeys:',vapidKeys)
-})()
 
+/* ------------------------------------------------ */
+/*                   get vapidKeys                  */
+/* ------------------------------------------------ */
 app.get('/vapidkeys', (req,res) => {
-  res.json({data: vapidKeys})
+  res.json({data: push.vapidKeys})
 })
 
+/* ------------------------------------------------ */
+/*               Cantidad suscriptores              */
+/* ------------------------------------------------ */
 app.get('/cs', async (req,res) => {
   let suscripcions = null
 
@@ -36,6 +38,9 @@ app.get('/cs', async (req,res) => {
   res.json({cantSuscriptores: Object.keys(suscripcions).length})
 })
 
+/* ------------------------------------------------ */
+/*                suscripción nueva                 */
+/* ------------------------------------------------ */
 app.post('/suscripcion', async(req,res) => {
   let suscripcions = null
   let datos = req.body
@@ -51,7 +56,9 @@ app.post('/suscripcion', async(req,res) => {
   res.json({res: 'ok suscription', datos})
 })
 
-
+/* ------------------------------------------------ */
+/*                  desuscripción                   */
+/* ------------------------------------------------ */
 app.post('/desuscripcion', async (req,res) => {
   let suscripcions = null
   let datos = req.body
@@ -68,12 +75,12 @@ app.post('/desuscripcion', async (req,res) => {
 })
 
 
-//-------------------------------------
-//endpoint para enviar una notificación
-//-------------------------------------
+/* ------------------------------------------------ */
+/*        endpoint para enviar una notificación     */
+/* ------------------------------------------------ */
 app.get('/notification', async (req,res) => {
   let query = req.query
-  const [haySuscripcions,subscription, payload, options, errores] = await db.enviarNotificacionPush(query.payload)
+  const [haySuscripcions,subscription, payload, options, errores] = await push.enviarNotificacionPush(query.payload)
 
   if(!errores.length && haySuscripcions) {
     res.json({res: 'ok', subscription, payload, options})
@@ -97,7 +104,7 @@ app.get('/test', async (req,res) => {
 })
 
 app.get('/push', async (req,res) => {
-  res.sendFile(__dirname + '/public/notificacion.html')
+  res.sendFile(__dirname + '/views/notificacion.html')
 })
 
 app.get('/data/:starttimestamp/:endtimestamp?', async (req,res) => {
@@ -114,6 +121,6 @@ app.get('/data/:starttimestamp/:endtimestamp?', async (req,res) => {
 const PORT = process.env.PORT || 8080
 
 const server = app.listen(PORT, () => console.log(`Servidor express escuchando en el puerto ${PORT}`))
-server.on('error', error => console.log(`Error en servidor express: ${error.message}`))
+server.on('error', error => console.log(`ERROR en servidor express: ${error.message}`))
 
 
