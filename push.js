@@ -1,10 +1,6 @@
 const webPush = require('./libpush/index.js');
 const fs = require('fs')
 
-let vapidKeys = (async () => {
-    return await iniVapidKeys()
-})()
-
 async function iniVapidKeys() {
     let vapidKeys = {}
     try {
@@ -20,7 +16,6 @@ async function iniVapidKeys() {
     console.log('vapidKeys:',vapidKeys)
     return vapidKeys
 }
-
 
 async function enviarNotificacionPush(mensaje) {
     let suscripcions = null
@@ -105,6 +100,6 @@ async function enviarNotificacionPush(mensaje) {
 }
 
 module.exports = {
-    vapidKeys,
+    iniVapidKeys,
     enviarNotificacionPush
 }

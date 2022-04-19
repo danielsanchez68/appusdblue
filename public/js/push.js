@@ -29,12 +29,15 @@ const notificaciones = (function() {
     //---------------------------------------------------------------
     function updateBtn() {
         if (isSubscribed) {
-            pushButton.textContent = 'Deshabilitar notificaciones';
+            //pushButton.textContent = 'Deshabilitar notificaciones';
+            pushButton.src = 'images/boton-on.png';
         } else {
-            pushButton.textContent = 'Habilitar notificaciones';
+            //pushButton.textContent = 'Habilitar notificaciones';
+            pushButton.src = 'images/boton-off.png';
         }
     
-        pushButton.disabled = false;
+        //pushButton.disabled = false;
+        pushButton.style.opacity = 1;
     }
     
     //---------------------------------------------------------------
@@ -210,7 +213,8 @@ const notificaciones = (function() {
         swRegistration = reg;
     
         pushButton.addEventListener('click', function () {
-            pushButton.disabled = true;
+            //pushButton.disabled = true;
+            pushButton.style.opacity = 0.5;
             if (isSubscribed) {
                 unsubscribeUser();
             } else {

@@ -21,8 +21,8 @@ app.use(express.json())
 /* ------------------------------------------------ */
 /*                   get vapidKeys                  */
 /* ------------------------------------------------ */
-app.get('/vapidkeys', (req,res) => {
-  res.json({data: push.vapidKeys})
+app.get('/vapidkeys', async (req,res) => {
+  res.json({data: await push.iniVapidKeys()})
 })
 
 /* ------------------------------------------------ */
