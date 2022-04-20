@@ -1,6 +1,11 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
+    /* font-family: verdana; */
     margin: 0;
 }
 
@@ -15,6 +20,7 @@ h2 {
 
 h3 {
     color: brown;
+    font-style: italic;
 }
 
 #fyh {
@@ -36,7 +42,7 @@ h3 {
 
 #valor-venta i {
     color: crimson;
-    font-size: 90%;
+    font-size: 75%;
 }
 
 label {
@@ -47,6 +53,10 @@ h1 img {
     position: relative;
     top:10px;
     margin-right: 5px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
+    margin-bottom: 10px;
+
 }
 
 body {
@@ -66,4 +76,39 @@ pre code {
 
 .is-invisible {
    opacity: 0;
+}
+
+.btn-img {
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
+    border: 1px solid rgba(0,128,0,0.5);
+    align-self: flex-start;
+}
+
+h1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+label b {
+    color:rgb(0, 100, 0);
+}
+
+input {
+    border-radius: 2px;
+    border: 1px solid rgba(0,128,0,0.5);
+    box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
+    outline: none;
+}
+
+#borrar {
+    border-radius: 5px;
+    border: 1px solid rgba(0,128,0,0.5);
+    box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
+    width: 75px;
+    height: 25px;
+    color: green;
+    margin-top: 10px;
+    font-weight: bold;
 }

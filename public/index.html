@@ -21,8 +21,16 @@
 
 <body>
 
-    <h1><img src="./images/app.png" alt=""><u>Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></h1>
-    <h2>Fecha y hora actual: <span id="fyh"></span> - Venta <span id="valor-venta"></span></h2>
+    <h1>
+        <span>
+            <img src="./images/app.png" alt=""><br>
+            <u>Dolar <span style="color:blue;">Blue</span></u> <span id="version"></span></span>
+        </span>            
+        <img class="btn-img js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" src="images/boton-off.png" alt="">
+    </h1>
+
+    <h3><span id="fyh"></span></h3>
+    <h2>Venta <span id="valor-venta"></span></h2>
     <hr>
 
     <!-- --------------------------------------- -->
@@ -58,7 +66,7 @@
     <!-- ---------------------------------------- -->
     <section>
         <p>
-            <img class="js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" src="images/boton-off.png" alt="">
+            <!-- <img class="btn-img js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" src="images/boton-off.png" alt=""> -->
             <!-- <button disabled class="js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
                 Habilitar Notificaciones Push
             </button> -->
@@ -68,7 +76,6 @@
         </div>
 
     </section>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
         integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
