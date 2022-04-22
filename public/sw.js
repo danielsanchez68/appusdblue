@@ -24,7 +24,7 @@ self.addEventListener('push', e => {
     const options = {
         body: `Mensaje: ${mensaje}`,
         icon: 'images/icons/icon-72x72.png',
-        vibrate: [200, 100, 200, 100, 200, 100, 200],
+        //vibrate: [200, 100, 200, 100, 200, 100, 200],
         badge: 'https://w7.pngwing.com/pngs/90/177/png-transparent-computer-icons-united-states-dollar-dollar-sign-dollar-coin-dollar-trademark-logo-sign.png'
     }
 

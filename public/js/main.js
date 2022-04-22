@@ -16,6 +16,17 @@ let respuesta
 let startTimestampAnt = true
 let endTimestampAnt = true
 let contPedido = 0
+let toVisible = false
+
+
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'visible') {
+      console.log('visible', new Date().toLocaleString())
+      toVisible = true
+    } else {
+        console.log('NO visible', new Date().toLocaleString())
+    }
+});
 
 async function tickRepreData() {
     //tomo la hora del input y muestro el modo de operación
@@ -36,7 +47,8 @@ async function tickRepreData() {
     if (
         (!startTimestamp && !endTimestamp && (contPedido >= 60)) ||
         (startTimestamp != startTimestampAnt) ||
-        (endTimestamp != endTimestampAnt)
+        (endTimestamp != endTimestampAnt) ||
+        toVisible
     ) {
         console.log('Pidiendo...', Date.now())
         const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
@@ -46,6 +58,7 @@ async function tickRepreData() {
         endTimestampAnt = endTimestamp
 
         contPedido = 0
+        toVisible = false
     }
 
     if (respuesta) {

@@ -14,14 +14,23 @@ const cheerio = require('cheerio')
 } */
 
 //https://geekflare.com/es/web-scraping-in-javascript/
-const getBlue = async () => {
+/* const getBlue = async () => {
     const { data:respuesta } = await axios('https://www.cronista.com/MercadosOnline/moneda.html?id=ARSB')
     const $ = cheerio.load(respuesta)
     const dolarBlue = Number($('.value').text().split('$')[2].replace(',','.'))
     //console.log(dolarBlue)
     return dolarBlue
-}
+} */
 
+//https://www.valordolarblue.com.ar/
+const getBlue = async () => {
+    const { data:respuesta } = await axios('https://www.valordolarblue.com.ar/')
+    const $ = cheerio.load(respuesta)
+    //console.log($('.box_data.dolar_blue .values [title="Precio de venta del Dólar Blue en la Argentina"].value strong').text())
+    const dolarBlue = Number($('.box_data.dolar_blue .values [title="Precio de venta del Dólar Blue en la Argentina"].value strong').text().replace(',','.'))
+    //console.log(dolarBlue)
+    return dolarBlue
+}
 
 
 module.exports = {
