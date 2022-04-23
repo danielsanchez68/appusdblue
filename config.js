@@ -3,7 +3,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const URL_BASE = process.env.URL_BASE || 'mongodb://localhost:27017/mibase'
-const VERSION = 'v0.3.5'
+const VERSION = 'v0.3.6'
 const TMS_GETDOLARAPI = 60100 /* 5000 */
 
 module.exports = {

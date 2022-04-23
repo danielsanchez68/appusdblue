@@ -47,7 +47,7 @@ const connect = async () => {
 }
 
 const save = async dolar => {
-    return    
+    //return    
     const DolarSave = new DolarModel({dolar, timestamp: Date.now()})
     await DolarSave.save()
 }
