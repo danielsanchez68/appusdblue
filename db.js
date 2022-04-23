@@ -22,7 +22,7 @@ const connect = async () => {
             //console.log(dolar)
             await save(dolar)
             if(dolar != dolarAnt) {
-                const mensaje = `cambío el dolar de $${dolarAnt} a $${dolar}`
+                const mensaje = `Cambió el dolar de $${dolarAnt} a $${dolar}`
                 console.log(mensaje)
 
                 if(dolarAnt) {
@@ -47,7 +47,7 @@ const connect = async () => {
 }
 
 const save = async dolar => {
-    //return    
+    return    
     const DolarSave = new DolarModel({dolar, timestamp: Date.now()})
     await DolarSave.save()
 }

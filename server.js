@@ -28,7 +28,7 @@ app.get('/vapidkeys', async (req,res) => {
 /* ------------------------------------------------ */
 /*               Cantidad suscriptores              */
 /* ------------------------------------------------ */
-app.get('/cs', async (req,res) => {
+app.get('/suscriptores', async (req,res) => {
   let suscripcions = null
 
   //console.log('suscripcion',datos)

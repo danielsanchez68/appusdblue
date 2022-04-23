@@ -1,97 +1,133 @@
+let respuesta = null
+let contPedido = 0
+let cambioFecha = false
+
 async function iniRepreData() {
     //tomo la versión y la represnto
     const { data: rta } = await axios('/version')
-    document.getElementById('version').innerText = rta.version
+    console.log(rta)
+    document.getElementById('version').innerText = rta.version + (rta.cache? (' - ' + rta.cache) : '')
+
+    // --------- Listeners que NO necesitan perdir datos ---------
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+          console.log('visible', new Date().toLocaleString())
+          repre(respuesta)
+        } 
+        else {
+            console.log('NO visible', new Date().toLocaleString())
+        }
+    });
+    
+    window.addEventListener("resize", function() {
+        console.log('resize')
+        repre(respuesta)
+    });
+    
+    document.querySelectorAll('#filtros input[type="number"').forEach( input => {
+        input.addEventListener('input', () => {
+            console.log('input')
+            repre(respuesta)
+        })
+    })
+
+    // ----------- Listeners que necesitan perdir datos -------------
+    document.querySelectorAll('#filtros input').forEach( input => {
+        input.addEventListener('change', () => {
+            console.log('change')
+            cambioFecha = true
+        })
+    })
 
     //acción del botón de borrar
     document.getElementById('borrar').onclick = function () {
         document.getElementById('start-time').value = ''
         document.getElementById('end-time').value = ''
         document.getElementById('step-min').value = ''
+        cambioFecha = true
     }
 }
 
 
-let respuesta
-let startTimestampAnt = true
-let endTimestampAnt = true
-let contPedido = 0
-let toVisible = false
+function repre(respuesta) {
+    if(!respuesta) return 
 
+    console.warn('REPRESENTANDO...')
 
-document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === 'visible') {
-      console.log('visible', new Date().toLocaleString())
-      toVisible = true
-    } else {
-        console.log('NO visible', new Date().toLocaleString())
-    }
-});
+    const datos = respuesta.datos
+    const valorVentaActual = datos[datos.length - 1]?.dolar || '?'
+    const tsvalorVentaActual = datos[datos.length - 1]?.timestamp || '?'
 
-async function tickRepreData() {
+    //tomo el step de minutos
+    let stepMin = document.getElementById('step-min').value
+
+    if (datos.length >= 1000 && datos.length < 5000 && stepMin < 5) stepMin = 5
+    if (datos.length >= 5000 && datos.length < 10000 && stepMin < 10) stepMin = 10
+    if (datos.length >= 10000 && datos.length < 15000 && stepMin < 20) stepMin = 20
+    if (datos.length >= 15000 && datos.length < 20000 && stepMin < 30) stepMin = 30
+    if (datos.length >= 20000 && stepMin < 60) stepMin = 60
+
+    document.getElementById('valor-venta').innerHTML =
+        `$${valorVentaActual} <i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
+
+    const [startTime, startTimestamp] = getStartTimestamp()
+    const [endTime, endTimestamp] = getEndTimestamp()
+    
+    document.getElementById('modo').innerText = startTimestamp && endTimestamp ?
+        `Mostrando desde fecha inicial: ${new Date(startTime).toLocaleString()} hasta fecha final: ${new Date(endTime).toLocaleString()}` :
+        `Mostrando última hora`
+
+    document.getElementById('modo').innerText += ` en pasos de ${stepMin ? stepMin : 1} minuto(s)`
+
+    graf(datos, stepMin && stepMin != 0 ? stepMin : 1)
+}
+
+function getStartTimestamp() {
     //tomo la hora del input y muestro el modo de operación
     const startTime = document.getElementById('start-time').value
     const startTimestamp = new Date(startTime).getTime() || 0
 
+    return [startTime, startTimestamp]
+}
+
+function getEndTimestamp() {
     const endTime = document.getElementById('end-time').value
     const endTimestamp = new Date(endTime).getTime() || 0
+    
+    return [endTime, endTimestamp]
+}
 
-    contPedido++
-    //console.log(contPedido)
-    /* console.log(startTimestamp, startTimestampAnt )
-    console.log(endTimestamp, endTimestampAnt )
-    console.log(startTimestamp != startTimestampAnt )
-    console.log(endTimestamp != endTimestampAnt ) */
+async function tickRepreData() {
+    //represento la hora actual
+    document.getElementById('fyh').innerText = new Date().toLocaleString()
+    console.log('contPedido', contPedido)
+
+    const [startTime, startTimestamp] = getStartTimestamp()
+    const [endTime, endTimestamp] = getEndTimestamp()
 
     //petición de los datos al backend
     if (
-        (!startTimestamp && !endTimestamp && (contPedido >= 60)) ||
-        (startTimestamp != startTimestampAnt) ||
-        (endTimestamp != endTimestampAnt) ||
-        toVisible
+        (!startTimestamp && !endTimestamp && (contPedido == 0)) ||
+        cambioFecha
     ) {
-        console.log('Pidiendo...', Date.now())
+        console.warn('Pidiendo...', new Date().toLocaleString(), {contPedido, cambioFecha})
+
+        cambioFecha = false
+
+        respuesta = null
         const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
         respuesta = rta
 
-        startTimestampAnt = startTimestamp
-        endTimestampAnt = endTimestamp
-
-        contPedido = 0
-        toVisible = false
+        repre(respuesta)
     }
 
-    if (respuesta) {
-        const datos = respuesta.datos
-        const valorVentaActual = datos[datos.length - 1]?.dolar || '?'
-        const tsvalorVentaActual = datos[datos.length - 1]?.timestamp || '?'
-
-        //tomo el step de minutos
-        let stepMin = document.getElementById('step-min').value
-
-        if (datos.length >= 1000 && datos.length < 5000 && stepMin < 5) stepMin = 5
-        if (datos.length >= 5000 && datos.length < 10000 && stepMin < 10) stepMin = 10
-        if (datos.length >= 10000 && stepMin < 20) stepMin = 20
-
-        document.getElementById('valor-venta').innerHTML =
-            `$${valorVentaActual} <i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
-
-        document.getElementById('modo').innerText = startTimestamp && endTimestamp ?
-            `Mostrando desde fecha inicial: ${new Date(startTime).toLocaleString()} hasta fecha final: ${new Date(endTime).toLocaleString()}` :
-            `Mostrando última hora`
-
-        document.getElementById('modo').innerText += ` en pasos de ${stepMin ? stepMin : 1} minuto(s)`
-
-
-        graf(datos, stepMin && stepMin != 0 ? stepMin : 1)
-    }
-
-    //represento la hora actual
-    document.getElementById('fyh').innerText = new Date().toLocaleString()
+    //actualizo contador de pedidos
+    if(contPedido < 59 ) contPedido++
+    else contPedido = 0
 }
 
-async function repreData() {
 
+async function repreData() {
     await iniRepreData()
     await tickRepreData()
 
@@ -162,6 +198,13 @@ const graf = (datosin, step) => {
                 showticklabels: true,
                 linecolor: 'rgb(204,204,204)',
             },
+            margin: {
+                l: 50,
+                r: 50,
+                b: 125,
+                t: 125,
+                pad: 4
+            },
         };
 
         Plotly.newPlot('myDiv', data, layout);
@@ -178,7 +221,7 @@ function registrarServiceWorker() {
     if ('serviceWorker' in navigator) {
         this.navigator.serviceWorker.register('./sw.js')
             .then(reg => {
-                console.log('El service worker se registró correctamente', reg)
+                //console.log('El service worker se registró correctamente', reg)
 
                 notificaciones.initialiseUI(reg)
 
@@ -186,7 +229,7 @@ function registrarServiceWorker() {
                 Notification.requestPermission(function (result) {
                     if (result === 'granted') {
                         navigator.serviceWorker.ready.then(function (registration) {
-                            console.log(registration)
+                            //console.log(registration)
                         });
                     }
                 });
@@ -197,7 +240,7 @@ function registrarServiceWorker() {
                     installingWorker.onstatechange = () => {
                         console.log('SW ---> ', installingWorker.state)
                         if (installingWorker.state == 'activated') {
-                            console.log('reinicio en 2 segundos ...')
+                            console.error('reinicio en 2 segundos ...')
                             setTimeout(() => {
                                 console.log('OK!')
                                 location.reload()
