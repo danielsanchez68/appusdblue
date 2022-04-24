@@ -1,20 +1,33 @@
 'use strict';
 
-const config = require('./config.js')
-const db = require('./db.js')
-
 const express = require('express')
 const fs = require('fs')
 
+const config = require('./config.js')
+const db = require('./db.js')
 const push = require('./push.js')
-
-db.connect()
 
 const app = express()
 
+/* -------- Inicialización del canal de Websocket para este servidor --------- */
+const httpServer = require('http').Server(app)
+const io = require('socket.io')(httpServer)
+
+io.on('connection', async socket => {
+  console.log('Un cliente se ha conectado')
+
+  socket.emit('messages', await db.obtenerMensajes() )
+
+  socket.on('new-message', async mensaje => {
+      //mensajes.push(mensaje)
+      await db.guardarMensaje(mensaje)
+      io.sockets.emit('messages', await db.obtenerMensajes())
+  })
+})
+/* --------------------------------------------------------------------------- */
+
 app.use(express.static('public'))
 app.use(express.json())
-
 
 /* ------------------------------------------------ */
 /*                   get vapidKeys                  */
@@ -132,7 +145,9 @@ app.get('/data/:starttimestamp/:endtimestamp?', async (req,res) => {
 
 const PORT = process.env.PORT || 8080
 
-const server = app.listen(PORT, () => console.log(`Servidor express escuchando en el puerto ${PORT}`))
-server.on('error', error => console.log(`ERROR en servidor express: ${error.message}`))
-
+;(async () => {
+  await db.connect()
+  const server = httpServer.listen(PORT, () => console.log(`Servidor express escuchando en el puerto ${PORT}`))
+  server.on('error', error => console.log(`ERROR en servidor express: ${error.message}`))
+})()
 

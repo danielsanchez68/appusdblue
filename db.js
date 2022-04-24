@@ -3,17 +3,14 @@ const apidolar = require('./apidolar.js')
 const config = require('./config.js')
 const push = require('./push.js')
 
-const DolarSchema = mongoose.Schema({
-    dolar: Number,
-    timestamp: Number
-})
-
-const DolarModel = mongoose.model('blue', DolarSchema)
+let conexion = false
 
 const connect = async () => {
     try {
+        console.log('Conectando a la base de datos...')
         await mongoose.connect(config.URL_BASE);
         console.log('Base de datos conectada')
+        conexion = true
 
         let dolarAnt = 0
 
@@ -46,13 +43,26 @@ const connect = async () => {
     }
 }
 
+/* ------------------- DB DOLAR -------------------- */
+//Modelo de dato dolar
+const DolarSchema = mongoose.Schema({
+    dolar: Number,
+    timestamp: Number
+})
+const DolarModel = mongoose.model('blue', DolarSchema)
+
+
 const save = async dolar => {
-    //return    
+    //return
+    if(!conexion) return
+
     const DolarSave = new DolarModel({dolar, timestamp: Date.now()})
     await DolarSave.save()
 }
 
 const read = async (starttimestamp, endtimestamp) => {
+    if(!conexion) return
+
     const cant = 60 // en segundos
     let timestampActual = new Date().getTime()
     let timestampIni = starttimestamp && endtimestamp? starttimestamp : (timestampActual - (60000 * cant))
@@ -61,7 +71,44 @@ const read = async (starttimestamp, endtimestamp) => {
     return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
 }
 
+/* ------------------- DB CHAT -------------------- */
+//Modelo de mensaje chat
+const mensajeSchema = mongoose.Schema({
+    usuario : String,                     
+    texto : String
+})
+const MensajeModel = mongoose.model('mensajes', mensajeSchema)
+
+async function obtenerMensajes() {
+    if(!conexion) return []
+
+    try {
+        let mensajes = await MensajeModel.find({})
+        return mensajes
+    }
+    catch(err) {
+        console.log(`Error en read de mensajes: ${err.message}`)
+        return []
+    }
+}
+
+async function guardarMensaje(mensaje) {
+    if(!conexion) return {}
+
+    //console.log(mensaje)
+    try {
+        const mensajeModel = new MensajeModel(mensaje)
+        await mensajeModel.save()
+        return mensaje
+    }
+    catch(err) {
+        console.log(`Error en create de mensajes: ${err.message}`)
+    }
+}
+
 module.exports = {
     connect,
-    read
+    read,
+    obtenerMensajes,
+    guardarMensaje,
 }

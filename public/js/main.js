@@ -262,6 +262,7 @@ function start() {
     console.log('start...')
     registrarServiceWorker()
     repreData()
+    chat.start()
 }
 
 window.onload = start
