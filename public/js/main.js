@@ -198,13 +198,13 @@ const graf = (datosin, step) => {
                 showticklabels: true,
                 linecolor: 'rgb(204,204,204)',
             },
-            margin: {
+            /* margin: {
                 l: 50,
                 r: 50,
                 b: 125,
                 t: 125,
                 pad: 4
-            },
+            }, */
         };
 
         Plotly.newPlot('myDiv', data, layout);
