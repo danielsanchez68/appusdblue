@@ -1,4 +1,4 @@
-const CACHE_NAME = 'c0.3.9'
+const CACHE_NAME = 'c0.4.0'
 const CON_CACHE = true
 
 

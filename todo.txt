@@ -5,5 +5,6 @@ OK sacar recarga vista cada 1 seg (hacer con resize)
 OK agregar intervalos stepMin
 OK agregar cache (version test)
 OK representar version desde const VERSION de cache (con fetch en sw)
-OK agregar nombre en suscripcion
+OK agregar nombre en suscripcion- OK 
+OK Push message sent (poner a quien fue enviado)
 - agregar canal de chat
