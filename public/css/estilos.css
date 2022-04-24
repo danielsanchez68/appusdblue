@@ -54,7 +54,7 @@ h1 {
     justify-content: flex-start;
     align-items: center;
     padding: 5px;
-    margin: 10px;
+    margin-bottom: 10px;
 }
 
 h1 img {
@@ -130,7 +130,7 @@ input {
     outline: none;
 }
 
-#borrar {
+#borrar, #chat button {
     border-radius: 5px;
     border: 1px solid rgba(0,128,0,0.5);
     box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
@@ -139,4 +139,20 @@ input {
     color: rgb(12, 80, 12);
     margin-top: 10px;
     font-weight: bold;
+}
+
+#chat button {
+    width: 60px;
+    margin-left: 5px;
+}
+
+#chat #usuario {
+    width: 25%;
+    margin-right: 2px;
+    height: 25px;
+}
+
+#chat #texto {
+    width: 50%;
+    height: 25px;
 }
