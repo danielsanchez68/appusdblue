@@ -2,9 +2,11 @@ const notificaciones = (function() {
 
     let applicationServerPublicKey = ''
     let pushButton = null;
+    let emailSuscriptor = null;
     let isSubscribed = false;
     let swRegistration = null;
-    
+    const regExpEmail = /^\w+@\w+\.\w+$/
+
     //---------------------------------------------------------------
     // function urlB64ToUint8Array(base64String)
     //---------------------------------------------------------------
@@ -31,20 +33,30 @@ const notificaciones = (function() {
         if (isSubscribed) {
             //pushButton.textContent = 'Deshabilitar notificaciones';
             pushButton.src = 'images/boton-on.png';
+            pushButton.style.opacity = 1;
+            emailSuscriptor.value = ''
+            emailSuscriptor.setAttribute('disabled', '')
+            emailSuscriptor.style.opacity = 0.5;
+            emailSuscriptor.style.boxShadow = `2px 2px 2px rgba(0,128,0,0.5)`
+            emailSuscriptor.style.border = `1px solid rgba(0,128,0,0.5)`
         } else {
+            //console.log('updateBtn', emailSuscriptor.value? '1':'0')
+            pushButton.style.opacity = regExpEmail.test(emailSuscriptor.value)? 1: 0.5
             //pushButton.textContent = 'Habilitar notificaciones';
             pushButton.src = 'images/boton-off.png';
+            emailSuscriptor.removeAttribute('disabled')
+            emailSuscriptor.style.opacity = 1;
+            emailSuscriptor.style.boxShadow = `2px 2px 2px rgba(128,0,0,0.5)`
+            emailSuscriptor.style.border = `1px solid rgba(128,0,0,0.5)`
         }
     
         //pushButton.disabled = false;
-        pushButton.style.opacity = 1;
     }
     
     //---------------------------------------------------------------
     // function updateSubscriptionOnServer(subscription)
     //---------------------------------------------------------------
     function updateSubscriptionOnServer(subscription, suscribir) {
-        // TODO: Send subscription to application server
         if (suscribir) {
             postSuscripcion(subscription, data => {
                 console.log(data)
@@ -61,7 +73,6 @@ const notificaciones = (function() {
     // function subscribeUser()
     //---------------------------------------------------------------
     function subscribeUser() {
-    
         getVapidKeys(vapidkeys => {
             //console.log(vapidkeys)
     
@@ -75,6 +86,7 @@ const notificaciones = (function() {
                     applicationServerKey: applicationServerKey
                 })
                 .then(function (subscription) {
+                    console.log(subscription)
                     console.log('User is subscribed:', subscription);
         
                     updateSubscriptionOnServer(subscription, true);
@@ -101,7 +113,7 @@ const notificaciones = (function() {
         swRegistration.pushManager.getSubscription()
             .then(function (subscription) {
                 if (subscription) {
-                    /* return  */subscription.unsubscribe();
+                    subscription.unsubscribe();
                     return subscription
                 }
             })
@@ -132,54 +144,27 @@ const notificaciones = (function() {
             console.log(error)
             cb('error')
         }
-        /*
-        $.ajax({
-            url: url,
-            method: 'get'
-        })
-        .then(cb)
-        .catch(error => {
-            console.log(error)
-            cb('error')
-        })
-        */
     }
     
     //---------------------------------------------------------------
     // function postSuscripcion(datos, cb)
     //---------------------------------------------------------------
     async function postSuscripcion(datos, cb) {
-        //let url = 'http://localhost:8080/suscripcion'
-    
         try {
-            const { data: rta } = await axios.post('/suscripcion', datos)
+            //console.error(datos)
+            const { data: rta } = await axios.post('/suscripcion', {datos:datos, emailSuscriptor: emailSuscriptor.value})
             cb(rta)
         }
         catch(error) {
             console.log(error)
             cb('error')
         }
-        /*
-        $.ajax({
-            url: url,
-            data: JSON.stringify(datos),
-            contentType: 'application/json',
-            method: 'post'
-        })
-        .then(cb)
-        .catch(error => {
-            console.log(error)
-            cb('error')
-        })
-        */
     }
     
     //---------------------------------------------------------------
     // function postDesuscripcion(datos, cb)
     //---------------------------------------------------------------
     async function postDesuscripcion(datos, cb) {
-        //let url = 'http://localhost:8080/suscripcion'
-    
         try {
             const { data: rta } = await axios.post('/desuscripcion', datos)
             cb(rta)
@@ -188,40 +173,40 @@ const notificaciones = (function() {
             console.log(error)
             cb('error')
         }
-        /*
-        $.ajax({
-            url: url,
-            data: JSON.stringify(datos),
-            contentType: 'application/json',
-            method: 'post'
-        })
-        .then(cb)
-        .catch(error => {
-            console.log(error)
-            cb('error')
-        })
-        */
     }
 
     //---------------------------------------------------------------
     // function initialiseUI(reg)
     //---------------------------------------------------------------
     function initialiseUI(reg) {
-    
+
         pushButton = document.querySelector('.js-push-btn');
+        
+        emailSuscriptor = document.querySelector('#email-suscriptor')
+
         isSubscribed = false;
         swRegistration = reg;
-    
+        
         pushButton.addEventListener('click', function () {
             //pushButton.disabled = true;
             pushButton.style.opacity = 0.5;
             if (isSubscribed) {
                 unsubscribeUser();
             } else {
-                subscribeUser();
+                if(regExpEmail.test(emailSuscriptor.value)) {
+                    subscribeUser();
+                }
+                else alert('Debe ingresar un email válido de suscripción')
             }
         });
-    
+
+        emailSuscriptor.addEventListener('input', function () {
+            const ok = regExpEmail.test(emailSuscriptor.value)
+            pushButton.style.opacity = ok? 1 : 0.5;
+            emailSuscriptor.style.boxShadow = `2px 2px 2px ${ok?'rgba(0,128,0,0.5':'rgba(128,0,0,0.5'})`
+            emailSuscriptor.style.border = `1px solid ${ok?'rgba(0,128,0,0.5':'rgba(128,0,0,0.5'}`
+        });
+
         // Set the initial subscription value
         swRegistration.pushManager.getSubscription()
             .then(function (subscription) {

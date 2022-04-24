@@ -8,8 +8,6 @@ const fs = require('fs')
 
 const push = require('./push.js')
 
-require('./tick.js')
-
 db.connect()
 
 const app = express()
@@ -35,7 +33,17 @@ app.get('/suscriptores', async (req,res) => {
   try { suscripcions = JSON.parse(await fs.promises.readFile('suscripcions.dat','utf-8')) }
   catch { suscripcions = {} }
 
-  res.json({cantSuscriptores: Object.keys(suscripcions).length})
+  let cantSuscriptores = Object.keys(suscripcions).length
+  let detalleSuscriptores = []
+  if(cantSuscriptores) {
+    //console.log(suscripcions)
+    for(let key in suscripcions) {
+      //console.log(suscripcions[key])
+      detalleSuscriptores.push(suscripcions[key].emailSuscriptor)
+    }
+  }
+
+  res.json({cantSuscriptores, detalleSuscriptores})
 })
 
 /* ------------------------------------------------ */
@@ -43,14 +51,18 @@ app.get('/suscriptores', async (req,res) => {
 /* ------------------------------------------------ */
 app.post('/suscripcion', async(req,res) => {
   let suscripcions = null
-  let datos = req.body
+  let body = req.body
 
-  //console.log('suscripcion',datos)
+  let datos = body.datos
+  let emailSuscriptor = body.emailSuscriptor
+
+  //console.log('suscripcion', datos)
+
   try { suscripcions = JSON.parse(await fs.promises.readFile('suscripcions.dat','utf-8')) }
   catch { suscripcions = {} }
 
   //agrego suscripción
-  suscripcions[datos.endpoint] = datos
+  suscripcions[datos.endpoint] = { ...datos, emailSuscriptor } 
 
   await fs.promises.writeFile('suscripcions.dat', JSON.stringify(suscripcions))
   res.json({res: 'ok suscription', datos})

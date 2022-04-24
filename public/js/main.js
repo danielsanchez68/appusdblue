@@ -68,7 +68,7 @@ function repre(respuesta) {
     if (datos.length >= 20000 && stepMin < 60) stepMin = 60
 
     document.getElementById('valor-venta').innerHTML =
-        `$${valorVentaActual} <i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
+        `$${valorVentaActual}<br><i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
 
     const [startTime, startTimestamp] = getStartTimestamp()
     const [endTime, endTimestamp] = getEndTimestamp()
@@ -198,13 +198,13 @@ const graf = (datosin, step) => {
                 showticklabels: true,
                 linecolor: 'rgb(204,204,204)',
             },
-            /* margin: {
-                l: 50,
+            margin: {
+                /* l: 50,
                 r: 50,
-                b: 125,
+                b: 125, */
                 t: 125,
-                pad: 4
-            }, */
+                /* pad: 4 */
+            },
         };
 
         Plotly.newPlot('myDiv', data, layout);

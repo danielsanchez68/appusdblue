@@ -6,3 +6,4 @@ OK agregar intervalos stepMin
 OK agregar cache (version test)
 OK representar version desde const VERSION de cache (con fetch en sw)
 - agregar nombre en suscripcion
+- agregar canal de chat
