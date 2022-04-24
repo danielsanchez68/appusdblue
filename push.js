@@ -80,7 +80,7 @@ async function enviarNotificacionPush(mensaje) {
                 //-------------------
                 try {
                     await webPush.sendNotification(subscription, payload, options)
-                    console.log(`${++contEnvios} - OK Push message sent [${subscription.emailSuscriptor}]`);
+                    console.log(`${++contEnvios} - OK Push message sent [${suscripcion.emailSuscriptor}]`);
                     //res.json({res: 'ok', subscription, payload, options})
                 }
                 catch (err) {
