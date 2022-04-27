@@ -83,7 +83,11 @@ async function obtenerMensajes() {
     if(!conexion) return []
 
     try {
-        let mensajes = await MensajeModel.find({})
+        let mensajes = await MensajeModel.find({}).lean()
+        //console.log(mensajes[0]._id.getTimestamp())
+        for(let i=0; i<mensajes.length; i++) {
+            mensajes[i].timestamp = mensajes[i]._id.getTimestamp()
+        }
         return mensajes
     }
     catch(err) {

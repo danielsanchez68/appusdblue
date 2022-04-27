@@ -7,4 +7,9 @@ OK agregar cache (version test)
 OK representar version desde const VERSION de cache (con fetch en sw)
 OK agregar nombre en suscripcion- OK 
 OK Push message sent (poner a quien fue enviado)
-- agregar canal de chat
+OK agregar canal de chat
+OK permitir los puntos en los mails de registro de notificacion
+OK agregar gif paco de lucía
+OK agregar en chat la fecha y hora
+OK cambiar API por https://www.infobae.com/economia/divisas/dolar-hoy/
+- import en server

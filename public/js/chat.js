@@ -8,11 +8,15 @@ const chat = (function() {
     const divMensajes = document.querySelector('#chat #mensajes')
 
     function render(mensajes) {
+        console.log(mensajes)
+        //console.log(mensajes[0].timestamp)
         let html = mensajes.map( mensaje => `
             <div>
-                <b>${mensaje.usuario}</b>: 
+                <div>
+                    <b>${mensaje.usuario}</b> at <b style="color:green;">${new Date(mensaje.timestamp).toLocaleString()}</b></div>
                 <i>${mensaje.texto}</i>
             </div>
+            <br>
         `).join('')
 
         //console.log(html)
@@ -27,7 +31,7 @@ const chat = (function() {
 
         const socket = io.connect()
         socket.on('messages', mensajes => {
-            console.log(mensajes)
+            //console.log(mensajes)
             render(mensajes)
         })
 

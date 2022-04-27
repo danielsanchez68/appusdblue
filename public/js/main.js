@@ -100,7 +100,7 @@ function getEndTimestamp() {
 async function tickRepreData() {
     //represento la hora actual
     document.getElementById('fyh').innerText = new Date().toLocaleString()
-    console.log('contPedido', contPedido)
+    //console.log('contPedido', contPedido)
 
     const [startTime, startTimestamp] = getStartTimestamp()
     const [endTime, endTimestamp] = getEndTimestamp()

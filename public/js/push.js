@@ -5,7 +5,7 @@ const notificaciones = (function() {
     let emailSuscriptor = null;
     let isSubscribed = false;
     let swRegistration = null;
-    const regExpEmail = /^\w+@\w+\.\w+$/
+    const regExpEmail = /^[a-zA-Z0-9_.]+@\w+\.[a-zA-Z0-9_.]+$/
 
     //---------------------------------------------------------------
     // function urlB64ToUint8Array(base64String)

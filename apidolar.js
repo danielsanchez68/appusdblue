@@ -23,13 +23,25 @@ const cheerio = require('cheerio')
 } */
 
 //https://www.valordolarblue.com.ar/
-const getBlue = async () => {
+/* const getBlue = async () => {
     const { data:respuesta } = await axios('https://www.valordolarblue.com.ar/')
     const $ = cheerio.load(respuesta)
     //console.log($('.box_data.dolar_blue .values [title="Precio de venta del Dólar Blue en la Argentina"].value strong').text())
     const dolarBlue = Number($('.box_data.dolar_blue .values [title="Precio de venta del Dólar Blue en la Argentina"].value strong').text().replace(',','.'))
     //console.log(dolarBlue)
     return dolarBlue
+} */
+
+
+//https://www.infobae.com/economia/divisas/dolar-hoy/
+const getBlue = async () => {
+    const { data:respuesta } = await axios('https://www.infobae.com/economia/divisas/dolar-hoy/')
+    const $ = cheerio.load(respuesta)
+    //console.log($('a[href="https://www.infobae.com/tag/dolar-libre"] .exc-val').text())
+    const dolarBlue = Number($('a[href="https://www.infobae.com/tag/dolar-libre"] .exc-val').text())
+    //console.log('dolarBlue', dolarBlue)
+    return dolarBlue
+    //return 212.6
 }
 
 
