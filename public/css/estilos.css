@@ -81,13 +81,15 @@ h1 img {
 
 #suscripcion h2, #suscripcion h3 {
     margin: 8px;
+    margin-top: 14px;
 }
 
 #email-suscriptor {
+    padding: 5px;
     width: 100px;
-    margin-top: 5px;
+    margin-top: 8px;
     opacity: 0.5;
-    font-size: 10px;
+    font-size: 12px;
     box-shadow: 2px 2px 2px rgba(128,0,0,0.5);
     border: 1px solid rgba(128,0,0,0.5);
 }
@@ -128,6 +130,9 @@ input {
     border: 1px solid rgba(0,128,0,0.5);
     box-shadow: 2px 2px 2px rgba(0,128,0,0.5);
     outline: none;
+    width: 200px;
+    height: 30px;
+    padding: 10px;
 }
 
 #borrar, #chat button {
@@ -139,6 +144,10 @@ input {
     color: rgb(12, 80, 12);
     margin-top: 10px;
     font-weight: bold;
+}
+
+#borrar {
+    margin-left: 20px;
 }
 
 #chat button {
@@ -162,4 +171,17 @@ input {
     border-radius: 20px;
     margin-bottom: 20px;
     padding: 5px;
+
+    max-width: 800px;
+    min-width: 200px;
+}
+
+#go-fin img {
+    width:50px;
+    height:50px;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 99999; 
+    opacity: 0.7;
 }

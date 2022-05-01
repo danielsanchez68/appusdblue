@@ -1,6 +1,6 @@
 let respuesta = null
-let contPedido = 0
 let cambioFecha = false
+let cambioVisible = false
 
 async function iniRepreData() {
     //tomo la versión y la represnto
@@ -9,16 +9,6 @@ async function iniRepreData() {
     document.getElementById('version').innerText = rta.version + (rta.cache? (' - ' + rta.cache) : '')
 
     // --------- Listeners que NO necesitan perdir datos ---------
-    document.addEventListener("visibilitychange", function() {
-        if (document.visibilityState === 'visible') {
-          console.log('visible', new Date().toLocaleString())
-          repre(respuesta)
-        } 
-        else {
-            console.log('NO visible', new Date().toLocaleString())
-        }
-    });
-    
     window.addEventListener("resize", function() {
         console.log('resize')
         repre(respuesta)
@@ -32,9 +22,19 @@ async function iniRepreData() {
     })
 
     // ----------- Listeners que necesitan perdir datos -------------
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+          //console.log('visible', new Date().toLocaleString())
+          cambioVisible  =true
+        } 
+        else {
+            //console.log('NO visible', new Date().toLocaleString())
+        }
+    });
+    
     document.querySelectorAll('#filtros input').forEach( input => {
         input.addEventListener('change', () => {
-            console.log('change')
+            //console.log('change')
             cambioFecha = true
         })
     })
@@ -97,22 +97,28 @@ function getEndTimestamp() {
     return [endTime, endTimestamp]
 }
 
+let minutesAnt = null
 async function tickRepreData() {
     //represento la hora actual
-    document.getElementById('fyh').innerText = new Date().toLocaleString()
-    //console.log('contPedido', contPedido)
+    const timeNow = new Date()
 
-    const [startTime, startTimestamp] = getStartTimestamp()
-    const [endTime, endTimestamp] = getEndTimestamp()
+    document.getElementById('fyh').innerText = timeNow.toLocaleString()
+
+    const [, startTimestamp] = getStartTimestamp()
+    const [, endTimestamp] = getEndTimestamp()
+
+    let minutes = timeNow.getMinutes()
 
     //petición de los datos al backend
     if (
-        (!startTimestamp && !endTimestamp && (contPedido == 0)) ||
-        cambioFecha
+        (!startTimestamp && !endTimestamp && (minutes != minutesAnt)) ||
+        cambioFecha || cambioVisible
     ) {
-        console.warn('Pidiendo...', new Date().toLocaleString(), {contPedido, cambioFecha})
+        console.warn('Pidiendo...', new Date().toLocaleString(), {minutes, cambioFecha, cambioVisible})
 
-        cambioFecha = false
+        if(cambioFecha) cambioFecha = false
+        if(cambioVisible) cambioVisible = false
+        minutesAnt = minutes
 
         respuesta = null
         const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
@@ -120,10 +126,6 @@ async function tickRepreData() {
 
         repre(respuesta)
     }
-
-    //actualizo contador de pedidos
-    if(contPedido < 59 ) contPedido++
-    else contPedido = 0
 }
 
 

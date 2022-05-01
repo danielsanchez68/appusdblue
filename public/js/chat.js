@@ -8,12 +8,12 @@ const chat = (function() {
     const divMensajes = document.querySelector('#chat #mensajes')
 
     function render(mensajes) {
-        console.log(mensajes)
+        //console.log(mensajes)
         //console.log(mensajes[0].timestamp)
         let html = mensajes.map( mensaje => `
             <div>
                 <div>
-                    <b>${mensaje.usuario}</b> at <b style="color:green;">${new Date(mensaje.timestamp).toLocaleString()}</b></div>
+                    <b>${mensaje.usuario}</b><span style="font-size:75%;"> at <b style="color:green;">${new Date(mensaje.timestamp).toLocaleString()}</b></span></div>
                 <i>${mensaje.texto}</i>
             </div>
             <br>

@@ -12,4 +12,12 @@ OK permitir los puntos en los mails de registro de notificacion
 OK agregar gif paco de lucía
 OK agregar en chat la fecha y hora
 OK cambiar API por https://www.infobae.com/economia/divisas/dolar-hoy/
+OK achicar paco de lucia
+OK achicar fecha en chat
+OK en visible volver a realizar el pedido
+OK boton reset filtro al lado del mensaje
+OK boton de ir al ultimo mensaje en el chat
+- modal en suscripción
+- envio de email a suscriptores con doble opt in
 - import en server
+- revisar la no inclusión de todo.txt en deploy a la nube (.gitignore)
