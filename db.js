@@ -15,25 +15,33 @@ const connect = async () => {
         let dolarAnt = 0
 
         setInterval(async () => {
-            let dolar = await apidolar.getBlue()
-            //console.log(dolar)
-            await save(dolar)
-            if(dolar != dolarAnt) {
-                const mensaje = `Cambió el dolar de $${dolarAnt} a $${dolar}`
-                console.log(mensaje)
+            try {
+                let dolar = await apidolar.getBlue()
 
-                if(dolarAnt) {
-                  console.log('> Enviando notificación ...')
-                  const [haySuscripcions,subscription, payload, options, errores] = await push.enviarNotificacionPush(mensaje)
+                if(dolar != 0) {
+                    //console.log(dolar)
+                    await save(dolar)
+                    if(dolar != dolarAnt) {
+                        const mensaje = `Cambió el dolar de $${dolarAnt} a $${dolar}`
+                        console.log(mensaje)
 
-                  if(!errores.length && haySuscripcions) {
-                    console.log({res: 'ok', subscription, payload, options})
-                  }
-                  else {
-                    console.log({res: 'ERROR', errores})
-                  }
+                        if(dolarAnt) {
+                        console.log('> Enviando notificación ...')
+                        const [haySuscripcions,subscription, payload, options, errores] = await push.enviarNotificacionPush(mensaje)
+
+                        if(!errores.length && haySuscripcions) {
+                            console.log({res: 'ok', subscription, payload, options})
+                        }
+                        else {
+                            console.log({res: 'ERROR', errores})
+                        }
+                        }
+                        dolarAnt = dolar
+                    }
                 }
-                dolarAnt = dolar
+            }
+            catch(error) {
+                console.log(`Error en setInterval TMS_GETDOLARAPI: ${error.message}`)
             }
         },config.TMS_GETDOLARAPI)
 

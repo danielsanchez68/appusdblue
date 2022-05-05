@@ -17,6 +17,9 @@ OK achicar fecha en chat
 OK en visible volver a realizar el pedido
 OK boton reset filtro al lado del mensaje
 OK boton de ir al ultimo mensaje en el chat
+OK pedido cada 1 min por Date
+OK mejorar distancia envio chat al final
+OK dolar en 0 no permitido
 - modal en suscripción
 - envio de email a suscriptores con doble opt in
 - import en server
