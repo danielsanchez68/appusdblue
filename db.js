@@ -68,7 +68,7 @@ const save = async dolar => {
     await DolarSave.save()
 }
 
-const read = async (starttimestamp, endtimestamp) => {
+const read = async (starttimestamp, endtimestamp, stepMin) => {
     if(!conexion) return
 
     const cant = 60 // en segundos
@@ -76,7 +76,34 @@ const read = async (starttimestamp, endtimestamp) => {
     let timestampIni = starttimestamp && endtimestamp? starttimestamp : (timestampActual - (60000 * cant))
     let timestampFin = starttimestamp && endtimestamp? endtimestamp: timestampActual
 
-    return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
+    let tiempoTranscurridoEnMinutos = (timestampFin - timestampIni) / 60000
+    //console.log('tiempoTranscurridoEnMinutos', tiempoTranscurridoEnMinutos)
+
+    if (tiempoTranscurridoEnMinutos >= 1000 && tiempoTranscurridoEnMinutos < 5000 && stepMin < 5) stepMin = 5
+    if (tiempoTranscurridoEnMinutos >= 5000 && tiempoTranscurridoEnMinutos < 10000 && stepMin < 10) stepMin = 10
+    if (tiempoTranscurridoEnMinutos >= 10000 && tiempoTranscurridoEnMinutos < 15000 && stepMin < 20) stepMin = 20
+    if (tiempoTranscurridoEnMinutos >= 15000 && tiempoTranscurridoEnMinutos < 20000 && stepMin < 30) stepMin = 30
+    if (tiempoTranscurridoEnMinutos >= 20000 && tiempoTranscurridoEnMinutos < 50000 && stepMin < 60) stepMin = 60
+    if (tiempoTranscurridoEnMinutos >= 50000 && stepMin < 120) stepMin = 120
+
+    //return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
+
+    const INTERVALO_EN_MINUTOS = stepMin || 1
+    //console.log('INTERVALO_EN_MINUTOS:', INTERVALO_EN_MINUTOS)
+
+    return await DolarModel.aggregate([
+        { $match: { timestamp: { $gte: timestampIni, $lte: timestampFin } } },
+        { $project: { 
+                _id:0,
+                dolar: 1,
+                timestamp: 1,
+                multiplo: { $mod : [{ $floor: { $divide:  ['$timestamp', 60000] } } , INTERVALO_EN_MINUTOS ] },
+                stepMin : { $multiply: [ INTERVALO_EN_MINUTOS, 1] }
+            } 
+        },
+        { $match: { multiplo: 0 } }
+    ])
+    
 }
 
 /* ------------------- DB CHAT -------------------- */

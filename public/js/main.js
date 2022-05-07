@@ -8,20 +8,20 @@ async function iniRepreData() {
     console.log(rta)
     document.getElementById('version').innerText = rta.version + (rta.cache? (' - ' + rta.cache) : '')
 
-    // --------- Listeners que NO necesitan perdir datos ---------
+    // --------- Listeners que NO necesitan pedir datos ---------
     window.addEventListener("resize", function() {
         console.log('resize')
         repre(respuesta)
     });
     
-    document.querySelectorAll('#filtros input[type="number"').forEach( input => {
+    /* document.querySelectorAll('#filtros input[type="number"').forEach( input => {
         input.addEventListener('input', () => {
             console.log('input')
             repre(respuesta)
         })
-    })
+    }) */
 
-    // ----------- Listeners que necesitan perdir datos -------------
+    // ----------- Listeners que necesitan pedir datos -------------
     document.addEventListener("visibilitychange", function() {
         if (document.visibilityState === 'visible') {
           //console.log('visible', new Date().toLocaleString())
@@ -39,6 +39,13 @@ async function iniRepreData() {
         })
     })
 
+    document.querySelectorAll('#filtros input[type="number"').forEach( input => {
+        input.addEventListener('input', () => {
+            //console.log('input')
+            cambioFecha = true
+        })
+    })    
+
     //acción del botón de borrar
     document.getElementById('borrar').onclick = function () {
         document.getElementById('start-time').value = ''
@@ -55,17 +62,23 @@ function repre(respuesta) {
     console.warn('REPRESENTANDO...')
 
     const datos = respuesta.datos
+    //console.log(datos)
+
+
     const valorVentaActual = datos[datos.length - 1]?.dolar || '?'
     const tsvalorVentaActual = datos[datos.length - 1]?.timestamp || '?'
 
     //tomo el step de minutos
-    let stepMin = document.getElementById('step-min').value
+    //let stepMin = document.getElementById('step-min').value 
+    let stepMin = datos[0]?.stepMin 
+
+    /* let stepMin = document.getElementById('step-min').value
 
     if (datos.length >= 1000 && datos.length < 5000 && stepMin < 5) stepMin = 5
     if (datos.length >= 5000 && datos.length < 10000 && stepMin < 10) stepMin = 10
     if (datos.length >= 10000 && datos.length < 15000 && stepMin < 20) stepMin = 20
     if (datos.length >= 15000 && datos.length < 20000 && stepMin < 30) stepMin = 30
-    if (datos.length >= 20000 && stepMin < 60) stepMin = 60
+    if (datos.length >= 20000 && stepMin < 60) stepMin = 60 */
 
     document.getElementById('valor-venta').innerHTML =
         `$${valorVentaActual}<br><i>(${new Date(tsvalorVentaActual).toLocaleString()})</i>`
@@ -73,13 +86,13 @@ function repre(respuesta) {
     const [startTime, startTimestamp] = getStartTimestamp()
     const [endTime, endTimestamp] = getEndTimestamp()
     
-    document.getElementById('modo').innerText = startTimestamp && endTimestamp ?
-        `Mostrando desde fecha inicial: ${new Date(startTime).toLocaleString()} hasta fecha final: ${new Date(endTime).toLocaleString()}` :
-        `Mostrando última hora`
+    document.getElementById('modo').innerHTML = startTimestamp && endTimestamp ?
+        `Mostrando desde <span>${new Date(startTime).toLocaleString()}</span> hasta <span>${new Date(endTime).toLocaleString()}</span>` :
+        `Mostrando <span>última hora</span>`
 
-    document.getElementById('modo').innerText += ` en pasos de ${stepMin ? stepMin : 1} minuto(s)`
+    document.getElementById('modo').innerHTML += ` en pasos de <span>${stepMin ? stepMin : 1} minuto(s)</span>`
 
-    graf(datos, stepMin && stepMin != 0 ? stepMin : 1)
+    graf(datos)
 }
 
 function getStartTimestamp() {
@@ -106,6 +119,7 @@ async function tickRepreData() {
 
     const [, startTimestamp] = getStartTimestamp()
     const [, endTimestamp] = getEndTimestamp()
+    const stepMin = document.getElementById('step-min').value || 0
 
     let minutes = timeNow.getMinutes()
 
@@ -121,7 +135,7 @@ async function tickRepreData() {
         minutesAnt = minutes
 
         respuesta = null
-        const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/`)
+        const { data: rta } = await axios(`/data/${startTimestamp}/${endTimestamp}/${stepMin}`)
         respuesta = rta
 
         repre(respuesta)
@@ -150,13 +164,13 @@ function timestamp2fyh(dato) {
     return `${dma[0]}/${dma[1]} ${hms[0]}:${hms[1]}`
 }
 
-const graf = (datosin, step) => {
+const graf = datosin => {
     //console.log(datosin)
 
     if (datosin.length && (typeof datosin[0] != 'undefined')) {
 
-        const datos = datosin.filter((dato, index) => index % step == 0)
-        datos.push(datosin[datosin.length - 1])
+        const datos = datosin//.filter((dato, index) => index % step == 0)
+        //datos.push(datosin[datosin.length - 1])
 
         document.getElementById('msg-error').innerHTML = ''
         document.getElementById('myDiv').style.display = 'block'

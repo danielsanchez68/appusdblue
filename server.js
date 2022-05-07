@@ -132,12 +132,13 @@ app.get('/push', async (req,res) => {
   res.sendFile(__dirname + '/views/notificacion.html')
 })
 
-app.get('/data/:starttimestamp/:endtimestamp?', async (req,res) => {
+app.get('/data/:starttimestamp/:endtimestamp/:stepmin', async (req,res) => {
     
   const startTimestamp = Number(req.params.starttimestamp) || 0
   const endTimestamp = Number(req.params.endtimestamp) || 0
+  const stepMin = Number(req.params.stepmin) || 0
   
-  const datos = await db.read(startTimestamp, endTimestamp)
+  const datos = await db.read(startTimestamp, endTimestamp, stepMin)
 
   res.json({datos, timestamp: Date.now()})
 })
