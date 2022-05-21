@@ -6,14 +6,14 @@ async function iniRepreData() {
     //tomo la versión y la represnto
     const { data: rta } = await axios('/version')
     console.log(rta)
-    document.getElementById('version').innerText = rta.version + (rta.cache? (' - ' + rta.cache) : '')
+    document.getElementById('version').innerText = rta.version + (rta.cache ? (' - ' + rta.cache) : '')
 
     // --------- Listeners que NO necesitan pedir datos ---------
-    window.addEventListener("resize", function() {
+    window.addEventListener("resize", function () {
         console.log('resize')
         repre(respuesta)
     });
-    
+
     /* document.querySelectorAll('#filtros input[type="number"').forEach( input => {
         input.addEventListener('input', () => {
             console.log('input')
@@ -22,42 +22,127 @@ async function iniRepreData() {
     }) */
 
     // ----------- Listeners que necesitan pedir datos -------------
-    document.addEventListener("visibilitychange", function() {
+    document.addEventListener("visibilitychange", function () {
         if (document.visibilityState === 'visible') {
-          //console.log('visible', new Date().toLocaleString())
-          cambioVisible  =true
-        } 
+            //console.log('visible', new Date().toLocaleString())
+            cambioVisible = true
+        }
         else {
             //console.log('NO visible', new Date().toLocaleString())
         }
     });
-    
-    document.querySelectorAll('#filtros input').forEach( input => {
+
+    document.querySelectorAll('#filtros input').forEach(input => {
         input.addEventListener('change', () => {
             //console.log('change')
+            
+            const [startTime, startTimestamp] = getStartTimestamp()
+            const [endTime, endTimestamp] = getEndTimestamp()
+            if(startTimestamp && endTimestamp) {
+                document.getElementById('myDiv').style.display = 'none'
+                document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+                cambioFecha = true
+            }
+        })
+    })
+
+    document.querySelectorAll('#filtros input[type="number"').forEach(input => {
+        input.addEventListener('input', () => {
+            //console.log('input')
+            document.getElementById('myDiv').style.display = 'none'
+            document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+                
             cambioFecha = true
         })
     })
 
-    document.querySelectorAll('#filtros input[type="number"').forEach( input => {
-        input.addEventListener('input', () => {
-            //console.log('input')
-            cambioFecha = true
-        })
-    })    
-
     //acción del botón de borrar
     document.getElementById('borrar').onclick = function () {
-        document.getElementById('start-time').value = ''
-        document.getElementById('end-time').value = ''
-        document.getElementById('step-min').value = ''
+        let refStart = document.getElementById('start-time')
+        let refEnd = document.getElementById('end-time')
+        let refStep = document.getElementById('step-min')
+        
+        if(refStart.value || refEnd.value || refStep.value) {
+            document.getElementById('start-time').value = ''
+            document.getElementById('end-time').value = ''
+            document.getElementById('step-min').value = ''
+
+            document.getElementById('myDiv').style.display = 'none'
+            document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+
+            cambioFecha = true
+        }
+    }
+
+    function to2dig(ent) {
+        return ent.length == 1? '0'+ent : ent
+    }
+
+    function fyhTransform(fyh) {
+        let fyhAux = fyh.toLocaleString()
+        //console.log(fyh)
+        //console.log(fyhAux)
+        let f = fyhAux.split(' ')[0].split('/')
+        let h = fyhAux.split(' ')[1].split(':')
+
+        return `${f[2]}-${to2dig(f[1])}-${to2dig(f[0])}T${to2dig(h[0])}:${to2dig(h[1])}:${to2dig(h[2])}.000`
+    }
+
+    function fyhEpoch(fyh) {
+        let fyhAux = fyh.toJSON()
+
+        return fyhAux.slice(0,-1)
+    }
+
+    //acción del botón de filtro último día
+    document.getElementById('ult-dia').onclick = function () {
+        let now = new Date()
+        let past = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+
+        document.getElementById('start-time').value = fyhTransform(past)
+        document.getElementById('end-time').value = fyhTransform(now)
+
+        document.getElementById('modo').innerHTML = ''
+        document.getElementById('myDiv').style.display = 'none'
+        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+
+        cambioFecha = true
+    }
+
+    //acción del botón de filtro último mes
+    document.getElementById('ult-mes').onclick = function () {
+        let now = new Date()
+        let past = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+
+        document.getElementById('start-time').value = fyhTransform(past)
+        document.getElementById('end-time').value = fyhTransform(now)
+
+        document.getElementById('modo').innerHTML = ''
+        document.getElementById('myDiv').style.display = 'none'
+        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+
+        cambioFecha = true
+    }
+
+    //acción del botón de filtro comienzo
+    document.getElementById('comienzo').onclick = function () {
+        let now = new Date()
+        let past = new Date(0)
+
+        document.getElementById('start-time').value = fyhEpoch(past)
+        document.getElementById('end-time').value = fyhTransform(now)
+
+        document.getElementById('modo').innerHTML = ''
+        document.getElementById('myDiv').style.display = 'none'
+        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+
         cambioFecha = true
     }
 }
 
 
 function repre(respuesta) {
-    if(!respuesta) return 
+    if (!respuesta) return
 
     console.warn('REPRESENTANDO...')
 
@@ -70,7 +155,7 @@ function repre(respuesta) {
 
     //tomo el step de minutos
     //let stepMin = document.getElementById('step-min').value 
-    let stepMin = datos[0]?.stepMin 
+    let stepMin = datos[0]?.stepMin
 
     /* let stepMin = document.getElementById('step-min').value
 
@@ -85,7 +170,7 @@ function repre(respuesta) {
 
     const [startTime, startTimestamp] = getStartTimestamp()
     const [endTime, endTimestamp] = getEndTimestamp()
-    
+
     document.getElementById('modo').innerHTML = startTimestamp && endTimestamp ?
         `Mostrando desde <span>${new Date(startTime).toLocaleString()}</span> hasta <span>${new Date(endTime).toLocaleString()}</span>` :
         `Mostrando <span>última hora</span>`
@@ -106,7 +191,7 @@ function getStartTimestamp() {
 function getEndTimestamp() {
     const endTime = document.getElementById('end-time').value
     const endTimestamp = new Date(endTime).getTime() || 0
-    
+
     return [endTime, endTimestamp]
 }
 
@@ -128,10 +213,10 @@ async function tickRepreData() {
         (!startTimestamp && !endTimestamp && (minutes != minutesAnt)) ||
         cambioFecha || cambioVisible
     ) {
-        console.warn('Pidiendo...', new Date().toLocaleString(), {minutes, cambioFecha, cambioVisible})
+        console.warn('Pidiendo...', new Date().toLocaleString(), { minutes, cambioFecha, cambioVisible })
 
-        if(cambioFecha) cambioFecha = false
-        if(cambioVisible) cambioVisible = false
+        if (cambioFecha) cambioFecha = false
+        if (cambioVisible) cambioVisible = false
         minutesAnt = minutes
 
         respuesta = null

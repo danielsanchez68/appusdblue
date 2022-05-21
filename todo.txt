@@ -20,6 +20,7 @@ OK boton de ir al ultimo mensaje en el chat
 OK pedido cada 1 min por Date
 OK mejorar distancia envio chat al final
 OK dolar en 0 no permitido
+- probar client.claim en lugar de reset 2 seg -> https://stackoverflow.com/questions/45467842/how-to-clear-cache-of-service-worker
 - modal en suscripción
 - envio de email a suscriptores con doble opt in
 - import en server
