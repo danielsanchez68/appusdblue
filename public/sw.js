@@ -1,4 +1,4 @@
-const CACHE_NAME = 'c0.6.0'
+const CACHE_NAME = 'c0.6.1'
 const CON_CACHE = true
 
 
@@ -28,7 +28,7 @@ self.addEventListener('activate', e => {
                     }
                 })
             )
-        }).then(self.clients.claim())
+        })//.then(self.clients.claim())
     )
 })
 

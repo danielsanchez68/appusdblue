@@ -150,10 +150,12 @@ input {
     font-weight: bold;
 }
 
+/*
 #borrar {
     margin-left: 30px;
     font-size: 0.8em;
 }
+*/
 
 #historico {
     width: 100%;
@@ -165,7 +167,7 @@ input {
     align-items: center;
 }
 
-#ult-dia, #ult-mes, #comienzo {
+#borrar, #ult-dia, #ult-mes, #comienzo {
     width: 30%;
     height: 40px;
     margin-right: 20px;
@@ -216,4 +218,37 @@ input {
     right: 5px;
     z-index: 99999; 
     opacity: 0.7;
+}
+
+#myDiv .spinner {
+    border: 12px solid rgba(0, 0, 0, 0.1);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border-left-color: rgb(255, 30, 0);
+
+    animation: spin 1s linear infinite;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -50px;
+    z-index: 99999999;
+
+    display: none;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#myDiv {
+    position: relative;
 }

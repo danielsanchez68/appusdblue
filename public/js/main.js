@@ -2,6 +2,10 @@ let respuesta = null
 let cambioFecha = false
 let cambioVisible = false
 
+function setSpinner(estado) {
+    document.querySelector('#myDiv .spinner').style.display = estado? 'block' : 'none'
+}
+
 async function iniRepreData() {
     //tomo la versión y la represnto
     const { data: rta } = await axios('/version')
@@ -39,8 +43,9 @@ async function iniRepreData() {
             const [startTime, startTimestamp] = getStartTimestamp()
             const [endTime, endTimestamp] = getEndTimestamp()
             if(startTimestamp && endTimestamp) {
-                document.getElementById('myDiv').style.display = 'none'
-                document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+                document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+                setSpinner(true)             
+                   
                 cambioFecha = true
             }
         })
@@ -49,8 +54,9 @@ async function iniRepreData() {
     document.querySelectorAll('#filtros input[type="number"').forEach(input => {
         input.addEventListener('input', () => {
             //console.log('input')
-            document.getElementById('myDiv').style.display = 'none'
-            document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+
+            document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+            setSpinner(true)                
                 
             cambioFecha = true
         })
@@ -67,8 +73,8 @@ async function iniRepreData() {
             document.getElementById('end-time').value = ''
             document.getElementById('step-min').value = ''
 
-            document.getElementById('myDiv').style.display = 'none'
-            document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+            document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+            setSpinner(true)                
 
             cambioFecha = true
         }
@@ -102,9 +108,8 @@ async function iniRepreData() {
         document.getElementById('start-time').value = fyhTransform(past)
         document.getElementById('end-time').value = fyhTransform(now)
 
-        document.getElementById('modo').innerHTML = ''
-        document.getElementById('myDiv').style.display = 'none'
-        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+        document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+        setSpinner(true)                
 
         cambioFecha = true
     }
@@ -117,9 +122,8 @@ async function iniRepreData() {
         document.getElementById('start-time').value = fyhTransform(past)
         document.getElementById('end-time').value = fyhTransform(now)
 
-        document.getElementById('modo').innerHTML = ''
-        document.getElementById('myDiv').style.display = 'none'
-        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+        document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+        setSpinner(true)                
 
         cambioFecha = true
     }
@@ -132,9 +136,8 @@ async function iniRepreData() {
         document.getElementById('start-time').value = fyhEpoch(past)
         document.getElementById('end-time').value = fyhTransform(now)
 
-        document.getElementById('modo').innerHTML = ''
-        document.getElementById('myDiv').style.display = 'none'
-        document.getElementById('msg-error').innerHTML = '<h2>Pidiendo datos...</h2>'
+        document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+        setSpinner(true)                
 
         cambioFecha = true
     }
@@ -258,8 +261,8 @@ const graf = datosin => {
         //datos.push(datosin[datosin.length - 1])
 
         document.getElementById('msg-error').innerHTML = ''
-        document.getElementById('myDiv').style.display = 'block'
-
+        //document.getElementById('myDiv').style.display = 'block'
+        setSpinner(false)                
 
         const fyh = datos.map(dato => timestamp2fyh(new Date(dato.timestamp).toLocaleString()))
         const dolars = datos.map(dato => dato.dolar)
