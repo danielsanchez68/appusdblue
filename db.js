@@ -84,7 +84,8 @@ const read = async (starttimestamp, endtimestamp, stepMin) => {
     if (tiempoTranscurridoEnMinutos >= 10000 && tiempoTranscurridoEnMinutos < 15000 && stepMin < 20) stepMin = 20
     if (tiempoTranscurridoEnMinutos >= 15000 && tiempoTranscurridoEnMinutos < 20000 && stepMin < 30) stepMin = 30
     if (tiempoTranscurridoEnMinutos >= 20000 && tiempoTranscurridoEnMinutos < 50000 && stepMin < 60) stepMin = 60
-    if (tiempoTranscurridoEnMinutos >= 50000 && stepMin < 120) stepMin = 120
+    if (tiempoTranscurridoEnMinutos >= 50000 && tiempoTranscurridoEnMinutos < 70000 && stepMin < 120) stepMin = 120
+    if (tiempoTranscurridoEnMinutos >= 70000 && stepMin < 240) stepMin = 240
 
     //return await DolarModel.find({timestamp: {$gte:timestampIni, $lte:timestampFin}},{__v:0,_id:0}).lean()
 

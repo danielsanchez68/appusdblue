@@ -85,9 +85,9 @@ async function iniRepreData() {
     }
 
     function fyhTransform(fyh) {
-        let fyhAux = fyh.toLocaleString()
-        //console.log(fyh)
-        //console.log(fyhAux)
+        let fyhAux = fyh.toLocaleString().replace(',','')
+        console.log(fyh)
+        console.log(fyhAux)
         let f = fyhAux.split(' ')[0].split('/')
         let h = fyhAux.split(' ')[1].split(':')
 
@@ -104,6 +104,20 @@ async function iniRepreData() {
     document.getElementById('ult-dia').onclick = function () {
         let now = new Date()
         let past = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+
+        document.getElementById('start-time').value = fyhTransform(past)
+        document.getElementById('end-time').value = fyhTransform(now)
+
+        document.getElementById('modo').innerHTML = 'Pidiendo datos...'
+        setSpinner(true)                
+
+        cambioFecha = true
+    }
+
+    //acción del botón de filtro último mes
+    document.getElementById('ult-semana').onclick = function () {
+        let now = new Date()
+        let past = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
         document.getElementById('start-time').value = fyhTransform(past)
         document.getElementById('end-time').value = fyhTransform(now)
