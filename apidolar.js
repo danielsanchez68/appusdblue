@@ -34,15 +34,31 @@ const cheerio = require('cheerio')
 
 
 //https://www.infobae.com/economia/divisas/dolar-hoy/
-const getBlue = async () => {
+/* const getBlue = async () => {
     const { data:respuesta } = await axios('https://www.infobae.com/economia/divisas/dolar-hoy/')
     const $ = cheerio.load(respuesta)
     //console.log($('a[href="https://www.infobae.com/tag/dolar-libre"] .exc-val').text())
+
     const dolarBlue = Number($('a[href="https://www.infobae.com/tag/dolar-libre"] .exc-val').text())
-    //console.log('dolarBlue', dolarBlue)
+    console.log('dolarBlue:', dolarBlue)
+    return dolarBlue
+    //return 212.6
+} */
+
+//<a href="/MercadosOnline/moneda.html?id=ARSB"><div class="sell-wrapper"><div class="sell-text">Venta</div><div class="sell-value"><span class="currency">$</span>288,00</div></div></a>
+
+//https://www.cronista.com/MercadosOnline/moneda.html?id=ARSB
+const getBlue = async () => {
+    const { data:respuesta } = await axios('https://www.cronista.com/MercadosOnline/moneda.html?id=ARSB')
+    //console.log(respuesta)
+    const $ = cheerio.load(respuesta)
+
+    const dolarBlue = Number($('a[href="/MercadosOnline/moneda.html?id=ARSB"] .sell-wrapper .sell-value').text().slice(1).replace(',','.'))
+    console.log('dolarBlue:', dolarBlue)
     return dolarBlue
     //return 212.6
 }
+
 
 
 module.exports = {
