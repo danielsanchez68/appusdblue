@@ -164,7 +164,8 @@ function repre(respuesta) {
     console.warn('REPRESENTANDO...')
 
     const datos = respuesta.datos
-    //console.log(datos)
+    console.log(respuesta)
+    console.log(datos)
 
 
     const valorVentaActual = datos[datos.length - 1]?.dolar || '?'

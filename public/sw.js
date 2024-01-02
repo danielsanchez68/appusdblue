@@ -1,6 +1,5 @@
-const CACHE_NAME = 'c0.6.4'
+const CACHE_NAME = 'c0.6.5'
 const CON_CACHE = true
-
 
 self.addEventListener('install', e => {
     console.log('sw install')

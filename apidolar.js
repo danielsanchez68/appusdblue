@@ -53,8 +53,9 @@ const getBlue = async () => {
     //console.log(respuesta)
     const $ = cheerio.load(respuesta)
 
-    const dolarBlue = Number($('a[href="/MercadosOnline/moneda.html?id=ARSB"] .sell-wrapper .sell-value').text().slice(1).replace(',','.'))
+    const dolarBlue = Number($('a[href="/MercadosOnline/moneda.html?id=ARSB"] .sell-wrapper .sell-value').text().slice(1).replace('.','').replace(',','.'))
     console.log('dolarBlue:', dolarBlue)
+    //console.log(dolarBlue)
     return dolarBlue
     //return 212.6
 }
