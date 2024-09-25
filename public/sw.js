@@ -1,4 +1,4 @@
-const CACHE_NAME = 'c0.6.8'
+const CACHE_NAME = 'c0.6.9'
 const CON_CACHE = true
 
 self.addEventListener('install', e => {
