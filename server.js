@@ -7,6 +7,8 @@ const config = require('./config.js')
 const db = require('./db.js')
 const push = require('./push.js')
 
+const path = require('path');
+
 const app = express()
 
 /* -------- Inicialización del canal de Websocket para este servidor --------- */
