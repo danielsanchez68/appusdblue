@@ -1,8 +1,8 @@
-const CACHE_NAME = 'c0.6.9'
+const CACHE_NAME = 'c0.7.0'
 const CON_CACHE = true
 
 self.addEventListener('install', e => {
-    console.log('sw install')
+    console.log('sw install!')
 
     //skip waiting automático
     self.skipWaiting()
