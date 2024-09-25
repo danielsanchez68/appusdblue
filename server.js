@@ -26,7 +26,8 @@ io.on('connection', async socket => {
 })
 /* --------------------------------------------------------------------------- */
 
-app.use(express.static('public'))
+const ruta = path.join(__dirname, './public')
+app.use(express.static(ruta))
 app.use(express.json())
 
 /* ------------------------------------------------ */
